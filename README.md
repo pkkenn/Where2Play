@@ -37,17 +37,6 @@ Concert data is available.
 
 **Given** historical concert data is available
 **When** I search for "Cleveland"
-**Then** I should receive a list with the following results:
-Artist: Taylor Swift
-Genre: Pop
-Popularity: 100
-Date: 5/7/2025
-Venue: Rocket Arena
-
-##### 1.1
-
-**Given** historical concert data is available
-**When** I search for "Cleveland"
 **Then** I should receive a list with results similar to the following:
 Artist: Taylor Swift
 Genre: Pop
