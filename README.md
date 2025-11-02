@@ -75,9 +75,42 @@ Artist: Vulfpeck
 
 Artist: Couch
 
-### Requirement 003
+### Requirement 003 Recommend Best Cities
 
-### Requirement 004
+#### Scenario
+
+As a user, I want to see which cities are most promising for future concerts based on fan engagement.
+
+#### Dependencies
+
+Historical concert data and listener data (Spotify, ticketmaster) are available. 
+
+#### Examples
+
+#### 3.1
+
+**Given** an artist with strong engagment in the Midwest \
+**When** I request city recommendations \
+**Then** I should see cities like Chicago, Detroit, and Minneapolis ranked by audience population.
+
+### Requirement 004 Match Venues to Artist Popularity
+
+#### Scenario
+
+As a user, I want to find venues in a city that match my expected audience size and genre.
+
+#### Dependencies
+
+Venue capacity, location, and genre compatibility data are available.
+
+#### Examples
+
+##### 4.1
+
+**Given** I expect 5,000 attendees for a show in "Atlanta" \
+**When** I search for venues in "Atlanta" \
+**Then** I should see results like "Coca-Cola Roxy" or "Tabernacle" ranked by best fit.
+
 
 ## Data Sources
 
@@ -95,3 +128,7 @@ Artist: Couch
 - Thi Nguyen
 
 ### Meeting Cadence
+- **Day:** Sunday
+- **Time:** 9:00 PM EST
+- **Format:** Virtual (Zoom/Teams)
+- **Purpose:** Review progress, assign tasks for the week, and demo new features.
