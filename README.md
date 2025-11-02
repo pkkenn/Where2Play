@@ -35,19 +35,20 @@ Concert data is available.
 
 ##### 1.1
 
-**Given** historical concert data is available
-**When** I search for "Cleveland"
-**Then** I should receive a list with results similar to the following:
-Artist: Taylor Swift
-Genre: Pop
-Popularity: 100
-Date: 5/7/2025
+**Given** historical concert data is available \
+**When** I search for "Cleveland" \
+**Then** I should receive a list with results similar to the following: \
+\
+Artist: Taylor Swift \
+Genre: Pop \
+Popularity: 100 \
+Date: 5/7/2025 \
 Venue: Rocket Arena
 
 ##### 1.2
 
-**Given** historical concert data is available
-**When** I search for "Little Diomede"
+**Given** historical concert data is available \
+**When** I search for "Little Diomede" \
 **Then** I should receive an empty list
 
 ### Requirement 002 Find Similar Artists
@@ -64,9 +65,10 @@ Artist data is available.
 
 ##### 2.1
 
-**Given** current artist information is available
-**When** I search for select the genre of "Funk" and the popularity "Moderately Famous"
-**Then** I should receive a list with results similar to the following:
+**Given** current artist information is available \
+**When** I search for select the genre of "Funk" and the popularity "Moderately Famous" \
+**Then** I should receive a list with results similar to the following: \
+\
 Artist: Vulfpeck
 
 Artist: Couch
