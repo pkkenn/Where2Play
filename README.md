@@ -17,7 +17,74 @@ By utilizing industry data, you will be able to ensure that you book the best ve
 
 ## Projects
 
+[Open Projects](https://github.com/pkkenn/Where2Play/projects?query=is%3Aopen)
+
 ## Requirements
+
+### Requirement 001 Search for City
+
+#### Scenario
+
+As a user, I want to view historical concerts in a selected city.
+
+#### Dependencies
+
+Concert data is available.
+
+#### Examples
+
+##### 1.1
+
+**Given** historical concert data is available
+**When** I search for "Cleveland"
+**Then** I should receive a list with the following results:
+Artist: Taylor Swift
+Genre: Pop
+Popularity: 100
+Date: 5/7/2025
+Venue: Rocket Arena
+
+##### 1.1
+
+**Given** historical concert data is available
+**When** I search for "Cleveland"
+**Then** I should receive a list with results similar to the following:
+Artist: Taylor Swift
+Genre: Pop
+Popularity: 100
+Date: 5/7/2025
+Venue: Rocket Arena
+
+##### 1.2
+
+**Given** historical concert data is available
+**When** I search for "Little Diomede"
+**Then** I should receive an empty list
+
+### Requirement 002 Find Similar Artists
+
+#### Scenario
+
+As a user, I want to search for artists by genre and popularity
+
+#### Dependencies
+
+Artist data is available.
+
+#### Examples
+
+##### 2.1
+
+**Given** current artist information is available
+**When** I search for select the genre of "Funk" and the popularity "Moderately Famous"
+**Then** I should receive a list with results similar to the following:
+Artist: Vulfpeck
+
+Artist: Couch
+
+### Requirement 003
+
+### Requirement 004
 
 ## Data Sources
 
