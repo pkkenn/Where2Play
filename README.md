@@ -38,6 +38,30 @@ Displays a table with Artist, Genre, Popularity, Date, and Venue columns. Users 
 #### Placeholder
 ![City Results](docs/storyboard/city-results.png)
 
+### Screen 003 Similar Artists
+
+#### Scenario
+As a user, I want to find artists similar to my genre and popularity level.
+
+#### Description
+Allows users to select a genre and adjust a popularity slider to view similar artists. Results display artist names and links to learn more.
+
+#### Placeholder
+![Similar Artists](docs/storyboard/similar-artists.png)
+
+
+### Screen 004 Recommended Cities
+
+#### Scenario
+As a user, I want to see which cities are most promising for future concerts based on audience engagement.
+
+#### Description
+Displays a ranked list of top cities, estimated audience sizes, and engagement scores. Includes filters for region and audience threshold.
+
+#### Placeholder
+![Recommended Cities](docs/storyboard/recommendations.png)
+
+
 
 
 ## Projects
