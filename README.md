@@ -111,6 +111,23 @@ Venue capacity, location, and genre compatibility data are available.
 **When** I search for venues in "Atlanta" \
 **Then** I should see results like "Coca-Cola Roxy" or "Tabernacle" ranked by best fit.
 
+### Requirement 005 Visualize Audience Hotspots
+
+## Scenario
+
+a user, I want to view a map showing where most of my fans are located globally.
+
+## Dependencies
+
+Spotify or ticketing data containing listener locations is available.
+
+#### Example
+
+#### 5.1
+**Given** I am an artist with listeners in multiple cities \
+**When** I open the audience map \
+**Then** I should see cities highlighted by fan density.
+
 
 ## Data Sources
 
