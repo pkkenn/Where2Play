@@ -16,6 +16,16 @@ By utilizing industry data, you will be able to ensure that you book the best ve
 ![Logo](https://github.com/pkkenn/Where2Play/blob/master/Where2Play/wwwroot/images/logo.jpg?raw=true)
 
 ## Storyboard
+### Screen 001 Home Page
+
+#### Scenario
+As a user, I want to search for concerts by city so that I can view upcoming or past performances in that area.
+
+#### Description
+The home page allows users to enter a city name and search for concerts. It includes quick navigation buttons to “Find Similar Artists” and “Recommended Cities.”
+
+#### Placeholder
+![Home Screen](docs/storyboard/home.png)
 
 ## Projects
 
