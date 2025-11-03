@@ -27,6 +27,19 @@ The home page allows users to enter a city name and search for concerts. It incl
 #### Placeholder
 ![Home Screen](docs/storyboard/home.png)
 
+### Screen 002 City Search Results
+
+#### Scenario
+As a user, I want to view a list of historical concerts after searching for a city.
+
+#### Description
+Displays a table with Artist, Genre, Popularity, Date, and Venue columns. Users can filter or sort results by genre, popularity, or date.
+
+#### Placeholder
+![City Results](docs/storyboard/city-results.png)
+
+
+
 ## Projects
 
 [Open Projects](https://github.com/pkkenn/Where2Play/projects?query=is%3Aopen)
