@@ -1,31 +1,185 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+main {
+    margin-top: 80px;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: ghostwhite;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1 {
+    text-align: center;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+h4 {
+    text-align: center;
+    color: #0b8364
+}
+
+ul {
+    text-align: left;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus, .badge:focus, .badge:hover {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #3B5249;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
+    color: #0b8364;
+}
+
+    a.navbar-brand.me-auto:hover, a.nav-link.mx-lg-2:hover {
+        color: #3B5249;
+    }
+
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 500;
+    transition: 0.3s color;
+}
+
+.login-button {
+    background-color: #06A77D;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s background-color;
+}
+
+    .login-button:hover {
+        background-color: #0b8364;
+    }
+
+#account_buttons li {
+    border-left: solid ghostwhite 10px;
+}
+
+#account_buttons li {
+    padding: 2px;
+    position: relative;
+    color: white;
+}
+
+.navbar-toggler {
+    border: none;
+    font-size: 1.25rem;
+}
+
+
+.navbar-right {
+    margin-right: 20px;
+}
+
+.navbar-toggler:focus, .btn-close:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.nav-item {
+    color: #3B5249;
+}
+
+#profile.active, #email.active, #change-password.active, #two-factor.active, #personal-data.active {
+    background-color: #0b8364
+}
+
+
+.nav-link {
+    color: #3B5249;
+    font-weight: 500;
+    position: relative;
+}
+
+    .nav-link:hover, .nav-link:active {
+        color: #000;
+    }
+
+
+@media (min-width:991px) {
+    .nav-link:before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: #3B5249;
+        visibility: hidden;
+        transform: translateX(-50%);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .nav-link:hover::before, .nav-link:active::before {
+        width: 100%;
+        color: #06A77D;
+        visibility: visible;
+    }
+}
+
+.btn-info {
+    background-color: #46a7c7;
+    border-color: #46a7c7;
+    color: #fff;
+    transition: background-color 0.3s ease-in-out;
+}
+
+    .btn-info:hover {
+        background-color: #3d8ca7;
+        border-color: #3d8ca7;
+        color: ghostwhite
+    }
+
+.btn-primary {
+    background-color: #0b8364;
+    border-color: #0b8364;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn-danger {
+    background-color: #B22222;
+}
+
+.btn-primary:hover {
+    background-color: #3B5249;
+    border-color: #0b8364;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+    text-decoration: none;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.img-fluid {
+    max-width: 80%;
+    max-height: 500px
 }
