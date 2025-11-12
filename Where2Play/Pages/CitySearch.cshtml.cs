@@ -20,14 +20,10 @@ namespace Where2Play.Pages
         private readonly IConfiguration _configuration;
 
 
-        public CitySearchModel(IHttpClientFactory httpClientFactory);
-        public CitySearchModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public CitySearchModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-            FinalResults = new List<ConcertResultViewModel>();
         }
-
         
         public void OnGet()
         {
@@ -42,13 +38,14 @@ namespace Where2Play.Pages
                 return;
             }
 
+            FinalResults = new List<ConcertResultViewModel>();
+
             try
             {
                 // --- Part 1: Call Setlist.FM API ---
 
                 var httpClient = _httpClientFactory.CreateClient();
                 httpClient.DefaultRequestHeaders.Add("x-api-key", "2QokW-SPmnefJFPpIoP0ABeRrFF5Rm-t8XxZ");
-                httpClient.DefaultRequestHeaders.Add("x-api-key", _configuration["SetlistFmApiKey"]);
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -99,7 +96,7 @@ namespace Where2Play.Pages
                         var artistDetails = MusicBrainzArtist.FromJson(mbJson);
 
                         // Safely get the rating and convert it to a percentage
-                        if (artistDetails.Rating != null && artistDetails.Rating.Value > 0)
+                        if (artistDetails.Rating.Value != null && artistDetails.Rating.Value > 0)
                         {
                             // Convert the 5-star rating to a 100% scale
                             popularity = $"{artistDetails.Rating.Value * 20}%";

@@ -94,7 +94,7 @@ namespace Where2Play.Models
 
         [JsonProperty("begin")]
         [JsonConverter(typeof(ParseStringConverter))]
-        public long Begin { get; set; }
+        public object Begin { get; set; }
 
         [JsonProperty("end")]
         public object End { get; set; }
@@ -106,7 +106,7 @@ namespace Where2Play.Models
         public long VotesCount { get; set; }
 
         [JsonProperty("value")]
-        public double Value { get; set; }
+        public double? Value { get; set; }
     }
     public partial class MusicBrainzArtist
     {
