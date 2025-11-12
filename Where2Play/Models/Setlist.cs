@@ -58,9 +58,6 @@ namespace Where2Play.Models
 
         [JsonProperty("url")]
         public Uri Url { get; set; }
-
-        [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore)]
-        public string Info { get; set; }
     }
 
     public partial class Artist
@@ -69,13 +66,13 @@ namespace Where2Play.Models
         public Guid Mbid { get; set; }
 
         [JsonProperty("name")]
-        public string ConcertsArtistName { get; set; }
+        public string Name { get; set; }
 
         [JsonProperty("sortName")]
-        public string ConcertsSortName { get; set; }
+        public string SortName { get; set; }
 
         [JsonProperty("disambiguation")]
-        public Disambiguation Disambiguation { get; set; }
+        public string Disambiguation { get; set; }
 
         [JsonProperty("url")]
         public Uri Url { get; set; }
@@ -94,9 +91,6 @@ namespace Where2Play.Models
 
         [JsonProperty("encore", NullValueHandling = NullValueHandling.Ignore)]
         public long? Encore { get; set; }
-
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; set; }
     }
 
     public partial class Song
@@ -112,9 +106,6 @@ namespace Where2Play.Models
 
         [JsonProperty("tape", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Tape { get; set; }
-
-        [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore)]
-        public string Info { get; set; }
     }
 
     public partial class Venue
@@ -172,35 +163,43 @@ namespace Where2Play.Models
         public string Name { get; set; }
     }
 
-    public enum Disambiguation { AmericanSingerSongwriterAndPianist, Empty, GermanBaroquePeriodComposerMusician, LAIndieSingerSongwriterFkaEvaBRoss, SoulSinger, TheBeatles, UsSoulSingerSongwriterPastorAndRecordProducer };
-
-
-    internal class DisambiguationConverter : JsonConverter
+    public partial class Welcome
     {
-        public override bool CanConvert(Type t) => t == typeof(Disambiguation) || t == typeof(Disambiguation?);
+        public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(json, Where2Play.Models.Converter.Settings);
+    }
+
+    public static class Serialize
+    {
+        public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(self, Where2Play.Models.Converter.Settings);
+    }
+
+    internal static class Converter
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+    }
+
+    internal class ParseStringConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            long l;
+            if (Int64.TryParse(value, out l))
             {
-                case "":
-                    return Disambiguation.Empty;
-                case "American singer-songwriter and pianist":
-                    return Disambiguation.AmericanSingerSongwriterAndPianist;
-                case "German Baroque period composer & musician":
-                    return Disambiguation.GermanBaroquePeriodComposerMusician;
-                case "L.A. indie singer-songwriter, fka Eva B. Ross":
-                    return Disambiguation.LAIndieSingerSongwriterFkaEvaBRoss;
-                case "The Beatles":
-                    return Disambiguation.TheBeatles;
-                case "US soul singer, songwriter, pastor and record producer":
-                    return Disambiguation.UsSoulSingerSongwriterPastorAndRecordProducer;
-                case "soul singer":
-                    return Disambiguation.SoulSinger;
+                return l;
             }
-            throw new Exception("Cannot unmarshal type Disambiguation");
+            throw new Exception("Cannot unmarshal type long");
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
@@ -210,34 +209,11 @@ namespace Where2Play.Models
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (Disambiguation)untypedValue;
-            switch (value)
-            {
-                case Disambiguation.Empty:
-                    serializer.Serialize(writer, "");
-                    return;
-                case Disambiguation.AmericanSingerSongwriterAndPianist:
-                    serializer.Serialize(writer, "American singer-songwriter and pianist");
-                    return;
-                case Disambiguation.GermanBaroquePeriodComposerMusician:
-                    serializer.Serialize(writer, "German Baroque period composer & musician");
-                    return;
-                case Disambiguation.LAIndieSingerSongwriterFkaEvaBRoss:
-                    serializer.Serialize(writer, "L.A. indie singer-songwriter, fka Eva B. Ross");
-                    return;
-                case Disambiguation.TheBeatles:
-                    serializer.Serialize(writer, "The Beatles");
-                    return;
-                case Disambiguation.UsSoulSingerSongwriterPastorAndRecordProducer:
-                    serializer.Serialize(writer, "US soul singer, songwriter, pastor and record producer");
-                    return;
-                case Disambiguation.SoulSinger:
-                    serializer.Serialize(writer, "soul singer");
-                    return;
-            }
-            throw new Exception("Cannot marshal type Disambiguation");
+            var value = (long)untypedValue;
+            serializer.Serialize(writer, value.ToString());
+            return;
         }
 
-        public static readonly DisambiguationConverter Singleton = new DisambiguationConverter();
+        public static readonly ParseStringConverter Singleton = new ParseStringConverter();
     }
 }

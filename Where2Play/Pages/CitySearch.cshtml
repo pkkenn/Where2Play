@@ -1,4 +1,58 @@
 ﻿@page
 @model Where2Play.Pages.CitySearchModel
 @{
+    ViewData["Title"] = "City Search";
+}
+
+<h1>Smart Concert Booker</h1>
+<p>Find the best cities to play!</p>
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="SearchCity" class="form-label">Search by City Name</label>
+        <input asp-for="SearchCity" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<hr />
+
+<h3>Results</h3>
+
+@if (Model.FinalResults == null || !Model.FinalResults.Any())
+{
+    @if (string.IsNullOrWhiteSpace(Model.SearchCity))
+    {
+        <p>Search for a city to see results.</p>
+    }
+    else
+    {
+        <p>No results found for "@Model.SearchCity".</p>
+    }
+}
+
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Artist</th>
+            <th>Genre</th>
+            <th>Popularity</th>
+            <th>Venue</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var result in Model.FinalResults)
+        {
+            <tr>
+                <td>@result.ArtistName</td>
+                <td>@result.Genre</td>
+                <td>@result.Popularity</td>
+                <td>@result.VenueName</td>
+                <td>@result.EventDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
 }
