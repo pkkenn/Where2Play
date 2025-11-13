@@ -6,214 +6,213 @@
 //
 //    var welcome = Welcome.FromJson(jsonString);
 
-namespace Where2Play.Models
+namespace Where2Play.Models;
+
+using System;
+using System.Collections.Generic;
+
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+public partial class Welcome
 {
-    using System;
-    using System.Collections.Generic;
+    [JsonProperty("type")]
+    public string Type { get; set; }
 
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    [JsonProperty("itemsPerPage")]
+    public long ItemsPerPage { get; set; }
 
-    public partial class Welcome
+    [JsonProperty("page")]
+    public long Page { get; set; }
+
+    [JsonProperty("total")]
+    public long Total { get; set; }
+
+    [JsonProperty("setlist")]
+    public Setlist[] Setlist { get; set; }
+}
+
+public partial class Setlist
+{
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    [JsonProperty("versionId")]
+    public string VersionId { get; set; }
+
+    [JsonProperty("eventDate")]
+    public string EventDate { get; set; }
+
+    [JsonProperty("lastUpdated")]
+    public string LastUpdated { get; set; }
+
+    [JsonProperty("artist")]
+    public Artist Artist { get; set; }
+
+    [JsonProperty("venue")]
+    public Venue Venue { get; set; }
+
+    [JsonProperty("sets")]
+    public Sets Sets { get; set; }
+
+    [JsonProperty("url")]
+    public Uri Url { get; set; }
+}
+
+public partial class Artist
+{
+    [JsonProperty("mbid")]
+    public Guid Mbid { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("sortName")]
+    public string SortName { get; set; }
+
+    [JsonProperty("disambiguation")]
+    public string Disambiguation { get; set; }
+
+    [JsonProperty("url")]
+    public Uri Url { get; set; }
+}
+
+public partial class Sets
+{
+    [JsonProperty("set")]
+    public Set[] Set { get; set; }
+}
+
+public partial class Set
+{
+    [JsonProperty("song")]
+    public Song[] Song { get; set; }
+
+    [JsonProperty("encore", NullValueHandling = NullValueHandling.Ignore)]
+    public long? Encore { get; set; }
+}
+
+public partial class Song
+{
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("cover", NullValueHandling = NullValueHandling.Ignore)]
+    public Artist Cover { get; set; }
+
+    [JsonProperty("with", NullValueHandling = NullValueHandling.Ignore)]
+    public Artist With { get; set; }
+
+    [JsonProperty("tape", NullValueHandling = NullValueHandling.Ignore)]
+    public bool? Tape { get; set; }
+}
+
+public partial class Venue
+{
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("city")]
+    public City City { get; set; }
+
+    [JsonProperty("url")]
+    public Uri Url { get; set; }
+}
+
+public partial class City
+{
+    [JsonProperty("id")]
+    [JsonConverter(typeof(ParseStringConverter))]
+    public long Id { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("state")]
+    public string State { get; set; }
+
+    [JsonProperty("stateCode")]
+    public string StateCode { get; set; }
+
+    [JsonProperty("coords")]
+    public Coords Coords { get; set; }
+
+    [JsonProperty("country")]
+    public Country Country { get; set; }
+}
+
+public partial class Coords
+{
+    [JsonProperty("lat")]
+    public double Lat { get; set; }
+
+    [JsonProperty("long")]
+    public double Long { get; set; }
+}
+
+public partial class Country
+{
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; }
+}
+
+public partial class Welcome
+{
+    public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(json, Where2Play.Models.Converter.Settings);
+}
+
+public static class Serialize
+{
+    public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(self, Where2Play.Models.Converter.Settings);
+}
+
+internal static class Converter
+{
+    public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
     {
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
-        [JsonProperty("itemsPerPage")]
-        public long ItemsPerPage { get; set; }
-
-        [JsonProperty("page")]
-        public long Page { get; set; }
-
-        [JsonProperty("total")]
-        public long Total { get; set; }
-
-        [JsonProperty("setlist")]
-        public Setlist[] Setlist { get; set; }
-    }
-
-    public partial class Setlist
-    {
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("versionId")]
-        public string VersionId { get; set; }
-
-        [JsonProperty("eventDate")]
-        public string EventDate { get; set; }
-
-        [JsonProperty("lastUpdated")]
-        public string LastUpdated { get; set; }
-
-        [JsonProperty("artist")]
-        public Artist Artist { get; set; }
-
-        [JsonProperty("venue")]
-        public Venue Venue { get; set; }
-
-        [JsonProperty("sets")]
-        public Sets Sets { get; set; }
-
-        [JsonProperty("url")]
-        public Uri Url { get; set; }
-    }
-
-    public partial class Artist
-    {
-        [JsonProperty("mbid")]
-        public Guid Mbid { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("sortName")]
-        public string SortName { get; set; }
-
-        [JsonProperty("disambiguation")]
-        public string Disambiguation { get; set; }
-
-        [JsonProperty("url")]
-        public Uri Url { get; set; }
-    }
-
-    public partial class Sets
-    {
-        [JsonProperty("set")]
-        public Set[] Set { get; set; }
-    }
-
-    public partial class Set
-    {
-        [JsonProperty("song")]
-        public Song[] Song { get; set; }
-
-        [JsonProperty("encore", NullValueHandling = NullValueHandling.Ignore)]
-        public long? Encore { get; set; }
-    }
-
-    public partial class Song
-    {
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("cover", NullValueHandling = NullValueHandling.Ignore)]
-        public Artist Cover { get; set; }
-
-        [JsonProperty("with", NullValueHandling = NullValueHandling.Ignore)]
-        public Artist With { get; set; }
-
-        [JsonProperty("tape", NullValueHandling = NullValueHandling.Ignore)]
-        public bool? Tape { get; set; }
-    }
-
-    public partial class Venue
-    {
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("city")]
-        public City City { get; set; }
-
-        [JsonProperty("url")]
-        public Uri Url { get; set; }
-    }
-
-    public partial class City
-    {
-        [JsonProperty("id")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("state")]
-        public string State { get; set; }
-
-        [JsonProperty("stateCode")]
-        public string StateCode { get; set; }
-
-        [JsonProperty("coords")]
-        public Coords Coords { get; set; }
-
-        [JsonProperty("country")]
-        public Country Country { get; set; }
-    }
-
-    public partial class Coords
-    {
-        [JsonProperty("lat")]
-        public double Lat { get; set; }
-
-        [JsonProperty("long")]
-        public double Long { get; set; }
-    }
-
-    public partial class Country
-    {
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-    }
-
-    public partial class Welcome
-    {
-        public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(json, Where2Play.Models.Converter.Settings);
-    }
-
-    public static class Serialize
-    {
-        public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(self, Where2Play.Models.Converter.Settings);
-    }
-
-    internal static class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+        DateParseHandling = DateParseHandling.None,
+        Converters =
         {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters =
-            {
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-    }
+            new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+        },
+    };
+}
 
-    internal class ParseStringConverter : JsonConverter
+internal class ParseStringConverter : JsonConverter
+{
+    public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+
+    public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
     {
-        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        if (reader.TokenType == JsonToken.Null) return null;
+        var value = serializer.Deserialize<string>(reader);
+        long l;
+        if (Int64.TryParse(value, out l))
         {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            long l;
-            if (Int64.TryParse(value, out l))
-            {
-                return l;
-            }
-            throw new Exception("Cannot unmarshal type long");
+            return l;
         }
+        throw new Exception("Cannot unmarshal type long");
+    }
 
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+    {
+        if (untypedValue == null)
         {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (long)untypedValue;
-            serializer.Serialize(writer, value.ToString());
+            serializer.Serialize(writer, null);
             return;
         }
-
-        public static readonly ParseStringConverter Singleton = new ParseStringConverter();
+        var value = (long)untypedValue;
+        serializer.Serialize(writer, value.ToString());
+        return;
     }
+
+    public static readonly ParseStringConverter Singleton = new ParseStringConverter();
 }

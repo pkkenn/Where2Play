@@ -1,11 +1,11 @@
-﻿namespace Where2Play.Models
+﻿namespace Where2Play.Models;
+
+public class ConcertResultViewModel
 {
-    public class ConcertResultViewModel
-    {
-        public string ArtistName { get; set; }
-        public string VenueName { get; set; }
-        public string EventDate { get; set; }
-        public string Genre { get; set; }
-        public string Popularity { get; set; }
-    }
+    public string ArtistName { get; set; } = default!;
+    public string VenueName { get; set; } = default!;
+    public string EventDate { get; set; } = default!;
+    public string Genre { get; set; } = default!;
+    public string Popularity { get; set; } = default!;
+    public Uri SetListURL { get; set; } = default!;
 }
