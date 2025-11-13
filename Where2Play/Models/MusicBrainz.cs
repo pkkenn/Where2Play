@@ -6,110 +6,109 @@
 //
 //    var welcome = Welcome.FromJson(jsonString);
 
-namespace Where2Play.Models
+namespace Where2Play.Models;
+
+using System;
+using System.Collections.Generic;
+
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+public partial class MusicBrainzArtist
 {
-    using System;
-    using System.Collections.Generic;
+    [JsonProperty("gender-id")]
+    public object GenderId { get; set; }
 
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    [JsonProperty("name")]
+    public string Name { get; set; }
 
-    public partial class MusicBrainzArtist
-    {
-        [JsonProperty("gender-id")]
-        public object GenderId { get; set; }
+    [JsonProperty("begin-area")]
+    public Area BeginArea { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+    [JsonProperty("ipis")]
+    public object[] Ipis { get; set; }
 
-        [JsonProperty("begin-area")]
-        public Area BeginArea { get; set; }
+    [JsonProperty("type")]
+    public string Type { get; set; }
 
-        [JsonProperty("ipis")]
-        public object[] Ipis { get; set; }
+    [JsonProperty("life-span")]
+    public LifeSpan LifeSpan { get; set; }
 
-        [JsonProperty("type")]
-        public string Type { get; set; }
+    [JsonProperty("area")]
+    public Area Area { get; set; }
 
-        [JsonProperty("life-span")]
-        public LifeSpan LifeSpan { get; set; }
+    [JsonProperty("sort-name")]
+    public string SortName { get; set; }
 
-        [JsonProperty("area")]
-        public Area Area { get; set; }
+    [JsonProperty("end-area")]
+    public object EndArea { get; set; }
 
-        [JsonProperty("sort-name")]
-        public string SortName { get; set; }
+    [JsonProperty("country")]
+    public string Country { get; set; }
 
-        [JsonProperty("end-area")]
-        public object EndArea { get; set; }
+    [JsonProperty("gender")]
+    public object Gender { get; set; }
 
-        [JsonProperty("country")]
-        public string Country { get; set; }
+    [JsonProperty("isnis")]
+    public string[] Isnis { get; set; }
 
-        [JsonProperty("gender")]
-        public object Gender { get; set; }
+    [JsonProperty("id")]
+    public Guid Id { get; set; }
 
-        [JsonProperty("isnis")]
-        public string[] Isnis { get; set; }
+    [JsonProperty("type-id")]
+    public Guid TypeId { get; set; }
 
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
+    [JsonProperty("disambiguation")]
+    public string Disambiguation { get; set; }
 
-        [JsonProperty("type-id")]
-        public Guid TypeId { get; set; }
+    [JsonProperty("rating")]
+    public Rating Rating { get; set; }
+}
 
-        [JsonProperty("disambiguation")]
-        public string Disambiguation { get; set; }
+public partial class Area
+{
+    [JsonProperty("id")]
+    public Guid Id { get; set; }
 
-        [JsonProperty("rating")]
-        public Rating Rating { get; set; }
-    }
+    [JsonProperty("type-id")]
+    public object TypeId { get; set; }
 
-    public partial class Area
-    {
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
+    [JsonProperty("disambiguation")]
+    public string Disambiguation { get; set; }
 
-        [JsonProperty("type-id")]
-        public object TypeId { get; set; }
+    [JsonProperty("sort-name")]
+    public string SortName { get; set; }
 
-        [JsonProperty("disambiguation")]
-        public string Disambiguation { get; set; }
+    [JsonProperty("type")]
+    public object Type { get; set; }
 
-        [JsonProperty("sort-name")]
-        public string SortName { get; set; }
+    [JsonProperty("name")]
+    public string Name { get; set; }
+}
 
-        [JsonProperty("type")]
-        public object Type { get; set; }
+public partial class LifeSpan
+{
+    [JsonProperty("ended")]
+    public bool Ended { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
-    }
+    [JsonProperty("begin")]
+    [JsonConverter(typeof(ParseStringConverter))]
+    public object Begin { get; set; }
 
-    public partial class LifeSpan
-    {
-        [JsonProperty("ended")]
-        public bool Ended { get; set; }
+    [JsonProperty("end")]
+    public object End { get; set; }
+}
 
-        [JsonProperty("begin")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public object Begin { get; set; }
+public partial class Rating
+{
+    [JsonProperty("votes-count")]
+    public long VotesCount { get; set; }
 
-        [JsonProperty("end")]
-        public object End { get; set; }
-    }
-
-    public partial class Rating
-    {
-        [JsonProperty("votes-count")]
-        public long VotesCount { get; set; }
-
-        [JsonProperty("value")]
-        public double? Value { get; set; }
-    }
-    public partial class MusicBrainzArtist
-    {
-        public static MusicBrainzArtist FromJson(string json) => JsonConvert.DeserializeObject<MusicBrainzArtist>(json, Where2Play.Models.Converter.Settings);
-    }
+    [JsonProperty("value")]
+    public double? Value { get; set; }
+}
+public partial class MusicBrainzArtist
+{
+    public static MusicBrainzArtist FromJson(string json) => JsonConvert.DeserializeObject<MusicBrainzArtist>(json, Where2Play.Models.Converter.Settings);
 }

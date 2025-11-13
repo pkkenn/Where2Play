@@ -18,34 +18,32 @@
 <hr />
 
 <h3>Results</h3>
-
-@if (Model.FinalResults == null || !Model.FinalResults.Any())
+@if (string.IsNullOrWhiteSpace(Model.SearchCity))
 {
-    @if (string.IsNullOrWhiteSpace(Model.SearchCity))
-    {
-        <p>Search for a city to see results.</p>
-    }
-    else
-    {
-        <p>No results found for "@Model.SearchCity".</p>
-    }
+    <p>Search for a city to see results.</p>
+}
+else if (Model.FinalResults is null || !Model.FinalResults.Any())
+{
+    <p>No results found for "@Model.SearchCity".</p>
 }
 else
 {
-  <table class="table">
-      <thead>
-          <tr>
-              <th>Artist</th>
-              <th>Genre</th>
-              <th>Popularity</th>
-              <th>Venue</th>
-              <th>Date</th>
-          </tr>
-      </thead>
-      <tbody>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Set List</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Popularity</th>
+                <th>Venue</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var result in Model.FinalResults)
             {
                 <tr>
+                    <td><a href="@result.SetListURL" target="_blank">View</a></td>
                     <td>@result.ArtistName</td>
                     <td>@result.Genre</td>
                     <td>@result.Popularity</td>
