@@ -49,13 +49,19 @@ namespace Where2Play.Pages
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var setlistUrl = $"https://api.setlist.fm/rest/1.0/search/setlists?cityName={SearchCity}";
+                var setlistUrl = $"https://api.setlist.fm/rest/1.0/search/setlists?cityName={SearchCity}&p=1";
+
+                // Log the URL for debugging
+                Console.WriteLine($"Calling Setlist.fm API: {setlistUrl}");
 
                 var response = await httpClient.GetAsync(setlistUrl);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     // If this call fails, stop and show no results
+                    Console.WriteLine($"Setlist.fm API call failed: {response.StatusCode}");
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error response: {errorContent}");
                     return;
                 }
 
