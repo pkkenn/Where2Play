@@ -186,34 +186,48 @@ namespace Where2Play.Models
         };
     }
 
-    internal class ParseStringConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+   internal class ParseStringConverter : JsonConverter
+{
+    public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
 
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+    public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null) return null;
+
+        try
         {
-            if (reader.TokenType == JsonToken.Null) return null;
+            // If JSON token is a number, return it directly
+            if (reader.TokenType == JsonToken.Integer)
+            {
+                return Convert.ToInt64(reader.Value);
+            }
+
+            // If JSON token is a string, try parsing it
             var value = serializer.Deserialize<string>(reader);
-            long l;
-            if (Int64.TryParse(value, out l))
+            if (Int64.TryParse(value, out long l))
             {
                 return l;
             }
-            throw new Exception("Cannot unmarshal type long");
-        }
 
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+            return null; // fallback if parsing fails
+        }
+        catch
         {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (long)untypedValue;
-            serializer.Serialize(writer, value.ToString());
+            return null; // fallback for unexpected types
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+    {
+        if (untypedValue == null)
+        {
+            serializer.Serialize(writer, null);
             return;
         }
-
-        public static readonly ParseStringConverter Singleton = new ParseStringConverter();
+        var value = (long)untypedValue;
+        serializer.Serialize(writer, value.ToString());
     }
+
+    public static readonly ParseStringConverter Singleton = new ParseStringConverter();
+}
 }
