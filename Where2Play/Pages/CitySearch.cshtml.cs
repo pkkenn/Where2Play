@@ -16,10 +16,12 @@ namespace Where2Play.Pages
         public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
 
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public SearchModel(IHttpClientFactory httpClientFactory)
+        public SearchModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         public void OnGet() { }
@@ -46,8 +48,15 @@ namespace Where2Play.Pages
 
             try
             {
+                var apiKey = _configuration["ApiKeys:SetlistFm"];
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    Console.WriteLine("Setlist.fm API key not configured.");
+                    return;
+                }
+
                 var httpClient = _httpClientFactory.CreateClient();
-                httpClient.DefaultRequestHeaders.Add("x-api-key", "2QokW-SPmnefJFPpIoP0ABeRrFF5Rm-t8XxZ");
+                httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
                 httpClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
