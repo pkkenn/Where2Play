@@ -10,6 +10,7 @@ namespace Where2Play.Models
         public string? ArtistName { get; set; }
         public string? Genre { get; set; }
         public string? Country { get; set; }
+        public string? Popularity { get; set; }
 
         // Concert info (Setlist.fm)
         public string? Venue { get; set; }
