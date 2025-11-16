@@ -5,16 +5,19 @@ using Where2Play.Models;
 
 namespace Where2Play.Pages
 {
-    public class CitySearchModel : PageModel
+    public class SearchModel : PageModel
     {
         [BindProperty]
-        public string SearchCity { get; set; }
+        public string SearchText { get; set; }
+
+        [BindProperty]
+        public string SearchType { get; set; } = "City"; // default
 
         public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
 
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public CitySearchModel(IHttpClientFactory httpClientFactory)
+        public SearchModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
@@ -25,27 +28,30 @@ namespace Where2Play.Pages
         {
             FinalResults.Clear();
 
-            if (string.IsNullOrWhiteSpace(SearchCity))
+            if (string.IsNullOrWhiteSpace(SearchText))
             {
-                Console.WriteLine("SearchCity is empty.");
+                Console.WriteLine("Search text is empty.");
+                return;
+            }
+
+            if (SearchType != "City")
+            {
+                // Artist search not implemented yet
+                Console.WriteLine("Artist search not implemented yet.");
                 return;
             }
 
             string normalizedCity = System.Globalization.CultureInfo.CurrentCulture.TextInfo
-                                    .ToTitleCase(SearchCity.Trim().ToLower());
-            Console.WriteLine($"Normalized city: '{normalizedCity}'");
+                                    .ToTitleCase(SearchText.Trim().ToLower());
 
             try
             {
-                // --- Call Setlist.fm API ---
                 var httpClient = _httpClientFactory.CreateClient();
                 httpClient.DefaultRequestHeaders.Add("x-api-key", "2QokW-SPmnefJFPpIoP0ABeRrFF5Rm-t8XxZ");
                 httpClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 var setlistUrl = $"https://api.setlist.fm/rest/1.0/search/setlists?cityName={normalizedCity}";
-                Console.WriteLine($"Calling Setlist.fm API: {setlistUrl}");
-
                 var response = await httpClient.GetAsync(setlistUrl);
 
                 if (!response.IsSuccessStatusCode)
@@ -70,7 +76,6 @@ namespace Where2Play.Pages
                     string country = "N/A";
                     string popularity = "N/A";
 
-                    // MusicBrainz enrichment if MBID exists
                     if (setlist.Artist?.Mbid != Guid.Empty)
                     {
                         var mbClient = _httpClientFactory.CreateClient();
@@ -92,7 +97,7 @@ namespace Where2Play.Pages
                                 popularity = $"{(artistDetails.Rating.Value / 5.0) * 100:F0}%";
                         }
 
-                        await Task.Delay(1000); // Respect MusicBrainz rate limit
+                        await Task.Delay(1000);
                     }
 
                     DateTime? eventDate = null;
@@ -102,7 +107,7 @@ namespace Where2Play.Pages
                     FinalResults.Add(new EventSummary
                     {
                         ArtistName = artistName,
-                        Genre = "N/A", // Optional placeholder
+                        Genre = "N/A",
                         Country = country,
                         Venue = setlist.Venue?.Name ?? "Unknown Venue",
                         City = setlist.Venue?.City?.Name ?? normalizedCity,
