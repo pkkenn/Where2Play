@@ -1,18 +1,29 @@
 ﻿@page
-@model Where2Play.Pages.CitySearchModel
+@model Where2Play.Pages.SearchModel
 @{
-    ViewData["Title"] = "City Search";
+    ViewData["Title"] = "Concert Search";
 }
 
 <h1>Smart Concert Booker</h1>
-<p>Find the best cities to play!</p>
+<p>Find concerts by city or artist!</p>
 
-<form method="post">
-    <div class="mb-3">
-        <label asp-for="SearchCity" class="form-label">Search by City Name</label>
-        <input asp-for="SearchCity" class="form-control" />
+<form method="post" class="mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-auto">
+            <label asp-for="SearchType" class="form-label">Search Type</label>
+            <select asp-for="SearchType" class="form-select">
+                <option value="City">City</option>
+                <option value="Artist">Artist</option>
+            </select>
+        </div>
+        <div class="col">
+            <label asp-for="SearchText" class="form-label">Enter Name</label>
+            <input asp-for="SearchText" class="form-control" placeholder="City or Artist" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mt-4">Search</button>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
 <hr />
@@ -21,14 +32,7 @@
 
 @if (Model.FinalResults == null || !Model.FinalResults.Any())
 {
-    @if (string.IsNullOrWhiteSpace(Model.SearchCity))
-    {
-        <p>Search for a city to see results.</p>
-    }
-    else
-    {
-        <p>No results found for "@Model.SearchCity".</p>
-    }
+    <p>No results found.</p>
 }
 else
 {
@@ -36,10 +40,11 @@ else
         <thead>
             <tr>
                 <th>Artist</th>
-                <th>Genre</th>
-                <th>Popularity</th>
                 <th>Venue</th>
+                <th>City</th>
                 <th>Date</th>
+                <th>Country</th>
+                <th>Popularity</th>
             </tr>
         </thead>
         <tbody>
@@ -47,10 +52,11 @@ else
             {
                 <tr>
                     <td>@result.ArtistName</td>
-                    <td>@result.Genre</td>
-                    <td>@result.Popularity</td>
-                    <td>@result.Venue</td>      
+                    <td>@result.Venue</td>
+                    <td>@result.City</td>
                     <td>@(result.Date?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                    <td>@result.Country</td>
+                    <td>@result.Popularity</td>
                 </tr>
             }
         </tbody>
