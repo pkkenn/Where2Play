@@ -32,25 +32,25 @@
 }
 else
 {
-  <table class="table">
-      <thead>
-          <tr>
-              <th>Artist</th>
-              <th>Genre</th>
-              <th>Popularity</th>
-              <th>Venue</th>
-              <th>Date</th>
-          </tr>
-      </thead>
-      <tbody>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Popularity</th>
+                <th>Venue</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var result in Model.FinalResults)
             {
                 <tr>
                     <td>@result.ArtistName</td>
                     <td>@result.Genre</td>
                     <td>@result.Popularity</td>
-                    <td>@result.VenueName</td>
-                    <td>@result.EventDate</td>
+                    <td>@result.Venue</td>      
+                    <td>@(result.Date?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                 </tr>
             }
         </tbody>
