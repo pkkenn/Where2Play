@@ -4,6 +4,7 @@ namespace Where2Play.Models
 {
     /// <summary>
     /// Combines artist and concert information from MusicBrainz and Setlist.fm.
+    /// </summary>
     public class EventSummary
     {
         // Artist info (MusicBrainz)
