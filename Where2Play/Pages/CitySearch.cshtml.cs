@@ -17,11 +17,13 @@ namespace Where2Play.Pages
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<SearchModel> _logger;
 
-        public SearchModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public SearchModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<SearchModel> logger)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public void OnGet() { }
@@ -32,14 +34,13 @@ namespace Where2Play.Pages
 
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                Console.WriteLine("Search text is empty.");
+                _logger.LogWarning("Search attempted with empty search text.");
                 return;
             }
 
             if (SearchType != "City")
             {
-                // Artist search not implemented yet
-                Console.WriteLine("Artist search not implemented yet.");
+                _logger.LogInformation("Artist search not implemented yet.");
                 return;
             }
 
@@ -51,7 +52,7 @@ namespace Where2Play.Pages
                 var apiKey = _configuration["ApiKeys:SetlistFm"];
                 if (string.IsNullOrEmpty(apiKey))
                 {
-                    Console.WriteLine("Setlist.fm API key not configured.");
+                    _logger.LogError("Setlist.fm API key not configured.");
                     return;
                 }
 
@@ -66,7 +67,7 @@ namespace Where2Play.Pages
                 if (!response.IsSuccessStatusCode)
                 {
                     string errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Setlist.fm API failed: {response.StatusCode}, {errorContent}");
+                    _logger.LogError("Setlist.fm API failed with status {StatusCode}: {ErrorContent}", response.StatusCode, errorContent);
                     return;
                 }
 
@@ -75,7 +76,7 @@ namespace Where2Play.Pages
 
                 if (searchResult?.Setlist == null || searchResult.Setlist.Length == 0)
                 {
-                    Console.WriteLine("No setlists found for this city.");
+                    _logger.LogInformation("No setlists found for city: {City}", normalizedCity);
                     return;
                 }
 
@@ -128,7 +129,7 @@ namespace Where2Play.Pages
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error during API calls: {ex.Message}");
+                _logger.LogError(ex, "Error occurred during API calls for city: {City}", SearchText);
             }
         }
     }
