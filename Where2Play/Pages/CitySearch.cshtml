@@ -28,14 +28,22 @@
 
 <hr />
 
-<h3>Results</h3>
-
-@if (Model.FinalResults == null || !Model.FinalResults.Any())
+@if (!Model.HasSearched)
 {
-    <p>No results found.</p>
+    <div class="alert alert-info">
+        Enter a city name above and click Search.
+    </div>
+}
+else if (Model.FinalResults == null || !Model.FinalResults.Any())
+{
+    <h3>Results</h3>
+    <div class="alert alert-warning">
+        No concerts found for "@Model.SearchText". Try another city.
+    </div>
 }
 else
 {
+    <h3>Results</h3>
     <table class="table">
         <thead>
             <tr>

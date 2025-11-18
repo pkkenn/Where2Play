@@ -13,7 +13,7 @@
     <header>
         <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand me-auto" href="index">Where2Play</a>
+               <a class="navbar-brand me-auto" asp-page="/Index">Where2Play</a> 
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -25,19 +25,19 @@
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
                             <li class="nav-item">
-                                <a class="nav-link mx-lg-2 active" aria-current="page" href="/index">Home</a>
+                                <a class="nav-link mx-lg-2 active" aria-current="page" asp-page="/Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mx-lg-2" href="/CitySearch">City Search</a>
+                                <a class="nav-link mx-lg-2" asp-page="/CitySearch">City Search</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mx-lg-2" href="/CityResults">City Results</a>
+                                <a class="nav-link mx-lg-2" asp-page="/CityResults">City Results</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mx-lg-2" href="/ArtistSearch">Artist Search</a>
+                                <a class="nav-link mx-lg-2" asp-page="/ArtistSearch">Artist Search</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mx-lg-2" href="/ArtistResults">Artist Results</a>
+                                <a class="nav-link mx-lg-2" asp-page="/ArtistResults">Artist Results</a>
                             </li>
                         </ul>
                     </div>
