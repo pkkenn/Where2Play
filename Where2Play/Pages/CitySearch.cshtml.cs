@@ -14,7 +14,7 @@ namespace Where2Play.Pages
         [BindProperty]
         public string SearchType { get; set; } = "City"; // default
 
-        public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
+        public List<EventSummary> FinalResults { get; set; } = [];
 
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -101,9 +101,10 @@ namespace Where2Play.Pages
                         await Task.Delay(ApiDelayMilliseconds);
                     }
 
-                    DateTime? eventDate = null;
-                    if (DateTime.TryParse(setlist.EventDate, out var parsedDate))
-                        eventDate = parsedDate;
+                    var eventDate = DateTime.TryParse(setlist.EventDate, out var parsedDate)
+                        ? parsedDate
+                        : (DateTime?)null;
+
 
                     FinalResults.Add(new EventSummary
                     {
