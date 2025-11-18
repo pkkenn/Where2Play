@@ -16,6 +16,8 @@ namespace Where2Play.Pages
 
         public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
 
+        public bool HasSearched { get; private set; }
+
         private readonly IHttpClientFactory _httpClientFactory;
 
         public SearchModel(IHttpClientFactory httpClientFactory)
@@ -23,10 +25,14 @@ namespace Where2Play.Pages
             _httpClientFactory = httpClientFactory;
         }
 
-        public void OnGet() { }
+        public void OnGet()
+        {
+            HasSearched = false;
+        }
 
         public async Task OnPostAsync()
         {
+            HasSearched = true;
             FinalResults.Clear();
 
             if (string.IsNullOrWhiteSpace(SearchText))
