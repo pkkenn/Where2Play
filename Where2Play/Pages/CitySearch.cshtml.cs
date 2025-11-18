@@ -7,6 +7,7 @@ namespace Where2Play.Pages
 {
     public class SearchModel : PageModel
     {
+        private const int ApiDelayMilliseconds = 1000;
         [BindProperty]
         public string SearchText { get; set; }
 
@@ -97,7 +98,7 @@ namespace Where2Play.Pages
                                 popularity = $"{(artistDetails.Rating.Value / 5.0) * 100:F0}%";
                         }
 
-                        await Task.Delay(1000);
+                        await Task.Delay(ApiDelayMilliseconds);
                     }
 
                     DateTime? eventDate = null;
