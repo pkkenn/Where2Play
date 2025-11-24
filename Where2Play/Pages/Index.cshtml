@@ -1,11 +1,72 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <p>
-        A smart concert booking assistant that helps bands and tour managers find the best cities to play using historical concert data and artist popularity.
+## Logo and Header Section ##
+<div class="text-center mt-5">
+    <img src="/images/logo.jpg" alt="Where2Play Logo" style="width:140px; border-radius:12px; margin-bottom:20px;" />
+
+    <h1 class="display-4 fw-bold">Find Your Next Stage</h1>
+    <p class="lead mt-3" style="max-width:650px; margin:0 auto;">
+        Where2Play helps artists and tour managers discover the best cities, venues, and audiences using real performance and listener data.
     </p>
 </div>
+
+## Search By City Section ##
+<div class="container mt-5">
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+            <i class="bi bi-geo-alt-fill" style="font-size: 3rem; color:#4e73df; margin-bottom:10px;"></i>
+            <h4>Search by City</h4>
+            <p style="font-size:0.95rem;">
+                Instantly explore historical concert activity and music fans in any city.
+            </p>
+        </div>
+
+        ## Find Similar Artists Section ##
+        <div class="col-md-4 mb-4">
+            <i class="bi bi-music-note-list" style="font-size: 3rem; color:#1cc88a; margin-bottom:10px;"></i>
+            <h4>Find Similar Artists</h4>
+            <p style="font-size:0.95rem;">
+                Discover artists with matching genres and popularity levels to help plan better shows.
+            </p>
+        </div>
+
+        ## Recommended Cities Section ##
+        <div class="col-md-4 mb-4">
+            <i class="bi bi-stars" style="font-size: 3rem; color:#f6c23e; margin-bottom:10px;"></i>
+            <h4>Recommended Cities</h4>
+            <p style="font-size:0.95rem;">
+                See which cities give you the strongest potential audience based on real data.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+## Buttons ##
+<div class="text-center mt-5">
+    <a class="btn btn-primary btn-lg mx-2" href="/CitySearch">Search Cities</a>
+    <a class="btn btn-outline-secondary btn-lg mx-2" href="/SimilarArtists">Similar Artists</a>
+    <a class="btn btn-outline-secondary btn-lg mx-2" href="/RecommendedCities">Recommended Cities</a>
+</div>
+
+<style>
+    .display-4 { font-size: 2.8rem; }
+    img { object-fit: cover; }
+</style>
+
+## Simple Overview Section ##
+<div class="text-center mt-5 mb-5" style="max-width:700px; margin:auto;">
+
+    <h4 class="fw-bold mb-4">What Where2Play Helps You Do</h4>
+
+    <p class="mb-3"><strong>1.</strong> Explore which cities have strong music engagement and real audience interest.</p>
+    <p class="mb-3"><strong>2.</strong> Understand how artists relate in genre and popularity to guide better decisions.</p>
+    <p class="mb-3"><strong>3.</strong> Get suggestions for cities that are most likely to support your next live show.</p>
+
+</div>
+
