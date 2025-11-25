@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Headers;
 using Where2Play.Models;
@@ -15,6 +16,8 @@ namespace Where2Play.Pages
 
         public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
 
+        public bool HasSearched { get; private set; }
+
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly ILogger<SearchModel> _logger;
@@ -26,10 +29,14 @@ namespace Where2Play.Pages
             _logger = logger;
         }
 
-        public void OnGet() { }
+        public void OnGet()
+        {
+            HasSearched = false;
+        }
 
         public async Task OnPostAsync()
         {
+            HasSearched = true;
             FinalResults.Clear();
 
             if (string.IsNullOrWhiteSpace(SearchText))
@@ -111,8 +118,30 @@ namespace Where2Play.Pages
                     }
 
                     DateTime? eventDate = null;
-                    if (DateTime.TryParse(setlist.EventDate, out var parsedDate))
-                        eventDate = parsedDate;
+                    if (!string.IsNullOrWhiteSpace(setlist.EventDate))
+                    {
+                        // Setlist.fm uses formats: "DD-MM-YYYY", "MM-YYYY", or "YYYY"
+                        string[] formats = { "dd-MM-yyyy", "MM-yyyy", "yyyy" };
+                        if (DateTime.TryParseExact(setlist.EventDate, formats,
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            System.Globalization.DateTimeStyles.None, out var parsedDate))
+                        {
+                            eventDate = parsedDate;
+                        }
+                        else
+                        {
+                            // Fallback: try standard parsing
+                            if (DateTime.TryParse(setlist.EventDate, out parsedDate))
+                            {
+                                eventDate = parsedDate;
+                            }
+                            else
+                            {
+                                // Log for debugging if date still can't be parsed
+                                Console.WriteLine($"Could not parse date: '{setlist.EventDate}' for artist: {artistName}");
+                            }
+                        }
+                    }
 
                     FinalResults.Add(new EventSummary
                     {
