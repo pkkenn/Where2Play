@@ -118,8 +118,14 @@ namespace Where2Play.Pages
                     await Task.Delay(1000);
 
                     DateTime? eventDate = null;
-                    if (DateTime.TryParse(setlist.EventDate, out var parsedDate))
+                    if (DateTime.TryParseExact(setlist.EventDate,
+                           "dd-MM-yyyy",
+                           System.Globalization.CultureInfo.InvariantCulture,
+                           System.Globalization.DateTimeStyles.None,
+                           out var parsedDate))
+                    {
                         eventDate = parsedDate;
+                    }
 
                     FinalResults.Add(new EventSummary
                     {
