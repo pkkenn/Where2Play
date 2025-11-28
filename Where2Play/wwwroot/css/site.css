@@ -24,7 +24,7 @@ h1 {
 
 h4 {
     text-align: center;
-    color: #0b8364
+    color: #26A6A6
 }
 
 ul {
@@ -32,7 +32,7 @@ ul {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus, .badge:focus, .badge:hover {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #3B5249;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #1E2D59;
 }
 
 html {
@@ -45,11 +45,11 @@ body {
 }
 
 a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
-    color: #0b8364;
+    color: #26A6A6;
 }
 
     a.navbar-brand.me-auto:hover, a.nav-link.mx-lg-2:hover {
-        color: #3B5249;
+        color: #1E2D59;
     }
 
 
@@ -70,7 +70,7 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
     .login-button:hover {
-        background-color: #0b8364;
+        background-color: #26A6A6;
     }
 
 #account_buttons li {
@@ -99,16 +99,16 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
 .nav-item {
-    color: #3B5249;
+    color: #1E2D59;
 }
 
 #profile.active, #email.active, #change-password.active, #two-factor.active, #personal-data.active {
-    background-color: #0b8364
+    background-color: #26A6A6
 }
 
 
 .nav-link {
-    color: #3B5249;
+    color: #1E2D59;
     font-weight: 500;
     position: relative;
 }
@@ -126,7 +126,7 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
         height: 2px;
         bottom: 0;
         left: 50%;
-        background-color: #3B5249;
+        background-color: #1E2D59;
         visibility: hidden;
         transform: translateX(-50%);
         transition: all 0.3s ease-in-out;
@@ -153,8 +153,8 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
     }
 
 .btn-primary {
-    background-color: #0b8364;
-    border-color: #0b8364;
+    background-color: #26A6A6;
+    border-color: #26A6A6;
     transition: background-color 0.3s ease-in-out;
 }
 
@@ -163,9 +163,21 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
 .btn-primary:hover {
-    background-color: #3B5249;
-    border-color: #0b8364;
+    background-color: #1E2D59;
+    border-color: #1E2D59;
 }
+
+#recommend-btn {
+    color: #D99E32;
+    border-color: #D99E32;
+    background-color: transparent;
+}
+
+    #recommend-btn:hover {
+        background-color: #D99E32;
+        border-color: #D99E32;
+        color: #ffffff;
+    }
 
 .btn-sm {
     padding: 0.25rem 0.5rem;
