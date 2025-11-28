@@ -94,11 +94,11 @@ namespace Where2Play.Models
     public partial class LifeSpan
     {
         [JsonProperty("ended")]
-        public bool Ended { get; set; }
+        public bool? Ended { get; set; }
 
         [JsonProperty("begin")]
         [JsonConverter(typeof(ParseStringConverter))]
-        public object Begin { get; set; }
+        public object? Begin { get; set; }
 
         [JsonProperty("end")]
         public object End { get; set; }

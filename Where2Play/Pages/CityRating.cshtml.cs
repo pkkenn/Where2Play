@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
 using Where2Play.Models;
 
 namespace Where2Play.Pages
 {
-    public class TourPlannerModel : PageModel
+    public class CityRatingModel : PageModel
     {
         // 1. INPUT PROPERTIES
         [BindProperty]
@@ -25,12 +25,11 @@ namespace Where2Play.Pages
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<TourPlannerModel> _logger;
+        private readonly ILogger<CityRatingModel> _logger;
 
-        // Constants matching your CitySearch User-Agent
         private const string UserAgentAppName = "Where2Play/1.0 (dickendd@mail.uc.edu)";
 
-        public TourPlannerModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<TourPlannerModel> logger)
+        public CityRatingModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<CityRatingModel> logger)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
@@ -58,20 +57,26 @@ namespace Where2Play.Pages
 
             try
             {
-                // Ensure this key name matches your appsettings.json
                 string setlistKey = _configuration["ApiKeys:SetlistFm"];
                 if (string.IsNullOrEmpty(setlistKey))
                 {
-                    ModelState.AddModelError("", "API Configuration Missing: SetlistFm key not found.");
+                    _logger.LogError("API Key Missing: SetlistFm key not found in configuration.");
+                    ModelState.AddModelError("", "Configuration Error: API key missing.");
+                    PopulateDropdowns();
                     return Page();
                 }
 
                 Results = await AnalyzeTourRoute(BandGenre, Popularity, TargetRegion, setlistKey);
+
+                if (Results.Count == 0)
+                {
+                    _logger.LogWarning($"Analysis complete but no cities matched criteria for Genre: {BandGenre}, Region: {TargetRegion}");
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching tour data");
-                ModelState.AddModelError(string.Empty, "There was an error communicating with the music services.");
+                _logger.LogError(ex, "Error calculating city ratings.");
+                ModelState.AddModelError(string.Empty, "An error occurred while analyzing data.");
             }
 
             PopulateDropdowns();
@@ -94,36 +99,37 @@ namespace Where2Play.Pages
 
         private async Task<List<CityFit>> AnalyzeTourRoute(string genre, BandPopularity pop, string region, string apiKey)
         {
-            // 1. Get State Codes for the selected Region
-            if (!RegionMap.TryGetValue(region, out var targetStates))
+            if (!RegionData.Map.TryGetValue(region, out var targetStates))
+            {
+                _logger.LogWarning($"Invalid region code received: {region}");
                 return new List<CityFit>();
+            }
 
-            // 2. Find Artists from MusicBrainz based on Genre
-            // This queries for artists tagged with the genre
+            // 1. Find Artists from MusicBrainz
             var artists = await GetArtistsByGenreAsync(genre);
+            _logger.LogInformation($"MusicBrainz returned {artists.Count} artists for genre '{genre}'.");
 
             var cityCounts = new Dictionary<string, int>();
             var cityReasons = new Dictionary<string, List<string>>();
 
-            // 3. For each artist, check their recent shows
+            // 2. Loop through artists to find their recent shows
             foreach (var artist in artists)
             {
-                // Rate Limiting
+                // Rate Limits
                 await Task.Delay(1100);
 
                 var shows = await GetShowsForArtistAsync(artist.Id.ToString(), apiKey);
 
-                if (shows == null) continue;
+                if (shows == null || !shows.Any()) continue;
 
                 foreach (var show in shows)
                 {
-                    // Check if Venue, City, and StateCode exist, and if the state is in our target region
+                    // Filter by Region (State Code)
                     if (show.Venue?.City?.StateCode != null &&
                         targetStates.Contains(show.Venue.City.StateCode))
                     {
                         string cityKey = $"{show.Venue.City.Name}, {show.Venue.City.StateCode}";
 
-                        // Count occurrences
                         if (!cityCounts.ContainsKey(cityKey))
                         {
                             cityCounts[cityKey] = 0;
@@ -132,7 +138,6 @@ namespace Where2Play.Pages
 
                         cityCounts[cityKey]++;
 
-                        // Add reason string (Artist @ Venue)
                         string reasonDetail = $"{artist.Name} @ {show.Venue.Name}";
                         if (!cityReasons[cityKey].Contains(reasonDetail))
                         {
@@ -142,17 +147,18 @@ namespace Where2Play.Pages
                 }
             }
 
-            // 4. Calculate Scores and return
+            _logger.LogInformation($"Found {cityCounts.Count} unique cities matching criteria.");
+
             if (cityCounts.Count == 0) return new List<CityFit>();
 
             int maxShows = cityCounts.Values.Max();
 
+            // 3. Construct Results
             return cityCounts.Select(kvp => new CityFit
             {
                 City = kvp.Key,
-                // Simple score calculation based on volume relative to the max found
                 FitScore = (int)((double)kvp.Value / maxShows * 100),
-                Reason = $"Hosted {kvp.Value} similar shows, including: {string.Join(", ", cityReasons[kvp.Key].Take(2))}."
+                Reason = $"Hosted {kvp.Value} shows: {string.Join(", ", cityReasons[kvp.Key].Take(3))}..."
             })
             .OrderByDescending(r => r.FitScore)
             .Take(20)
@@ -167,19 +173,40 @@ namespace Where2Play.Pages
             client.DefaultRequestHeaders.Add("User-Agent", UserAgentAppName);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            // Search query for artists by tag
-            string url = $"https://musicbrainz.org/ws/2/artist?query=tag:{genre}&fmt=json&limit=5";
+            string cleanGenre = genre.Trim().ToLower();
 
-            var response = await client.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return new List<MusicBrainzArtist>();
+            // Search by tag OR by artist keyword directly.
+            // AND increase limit to 25 to improve chances of getting results
+            string query = Uri.EscapeDataString($"tag:{cleanGenre} OR artist:{cleanGenre}");
+            string url = $"https://musicbrainz.org/ws/2/artist?query={query}&fmt=json&limit=25";
 
-            var json = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var response = await client.GetAsync(url);
+                string json = await response.Content.ReadAsStringAsync();
 
-            // We use a custom wrapper here because MusicBrainz.cs is for a Single Artist,
-            // but the Search returns a list wrapper.
-            var searchResult = JsonConvert.DeserializeObject<MusicBrainzSearchResponse>(json);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"MusicBrainz failed: {response.StatusCode} | Response: {json}");
+                    return new List<MusicBrainzArtist>();
+                }
 
-            return searchResult?.Artists ?? new List<MusicBrainzArtist>();
+                var searchResult = JsonConvert.DeserializeObject<MusicBrainzSearchResponse>(json);
+
+                if (searchResult?.Artists == null || searchResult.Artists.Count == 0)
+                {
+                    // Log raw JSON to see why parsing failed or if API returned nothing
+                    _logger.LogWarning($"MusicBrainz returned 0 results. Query: {url}");
+                    _logger.LogWarning($"Raw JSON: {json}");
+                }
+
+                return searchResult?.Artists ?? new List<MusicBrainzArtist>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception during MusicBrainz request.");
+                return new List<MusicBrainzArtist>();
+            }
         }
 
         private async Task<List<Setlist>> GetShowsForArtistAsync(string mbid, string apiKey)
@@ -188,20 +215,16 @@ namespace Where2Play.Pages
             client.DefaultRequestHeaders.Add("x-api-key", apiKey);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-            // Get setlists for this specific artist
             string url = $"https://api.setlist.fm/rest/1.0/artist/{mbid}/setlists?p=1";
-
-            var response = await client.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return new List<Setlist>();
-
-            string jsonResponse = await response.Content.ReadAsStringAsync();
 
             try
             {
-                // Use the static helper from your generated 'Setlist.cs'
-                var welcomeData = Welcome.FromJson(jsonResponse);
+                var response = await client.GetAsync(url);
+                if (!response.IsSuccessStatusCode) return new List<Setlist>();
 
-                // Return the array as a List, or empty if null
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                var welcomeData = Welcome.FromJson(jsonResponse);
                 return welcomeData?.Setlist?.ToList() ?? new List<Setlist>();
             }
             catch
@@ -209,14 +232,5 @@ namespace Where2Play.Pages
                 return new List<Setlist>();
             }
         }
-
-        private static readonly Dictionary<string, HashSet<string>> RegionMap = new()
-        {
-            { "NE", new HashSet<string> { "ME", "NH", "VT", "MA", "RI", "CT", "NY", "PA", "NJ" } },
-            { "SE", new HashSet<string> { "DE", "MD", "VA", "WV", "NC", "SC", "GA", "FL", "AL", "TN", "MS", "KY" } },
-            { "MW", new HashSet<string> { "OH", "IN", "MI", "IL", "WI", "MO", "IA", "MN", "ND", "SD", "NE", "KS" } },
-            { "SW", new HashSet<string> { "TX", "OK", "NM", "AZ" } },
-            { "W",  new HashSet<string> { "CO", "WY", "MT", "ID", "WA", "OR", "UT", "NV", "CA", "AK", "HI" } }
-        };
     }
 }
