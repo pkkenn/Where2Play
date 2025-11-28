@@ -7,13 +7,14 @@ namespace Where2Play.Pages
 {
     public class SearchModel : PageModel
     {
+        private const int ApiDelayMilliseconds = 1000;
         [BindProperty]
         public string SearchText { get; set; }
 
         [BindProperty]
         public string SearchType { get; set; } = "City"; // default
 
-        public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
+        public List<EventSummary> FinalResults { get; set; } = [];
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
@@ -107,12 +108,13 @@ namespace Where2Play.Pages
                                 popularity = $"{(artistDetails.Rating.Value / 5.0) * 100:F0}%";
                         }
 
-                        await Task.Delay(1000);
+                        await Task.Delay(ApiDelayMilliseconds);
                     }
 
-                    DateTime? eventDate = null;
-                    if (DateTime.TryParse(setlist.EventDate, out var parsedDate))
-                        eventDate = parsedDate;
+                    var eventDate = DateTime.TryParse(setlist.EventDate, out var parsedDate)
+                        ? parsedDate
+                        : (DateTime?)null;
+
 
                     FinalResults.Add(new EventSummary
                     {
