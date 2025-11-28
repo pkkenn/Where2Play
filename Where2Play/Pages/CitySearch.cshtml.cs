@@ -85,6 +85,7 @@ namespace Where2Play.Pages
                     string artistName = setlist.Artist?.Name ?? "Unknown Artist";
                     string country = "N/A";
                     string popularity = "N/A";
+                    string genre = "N/A";
 
                     if (setlist.Artist?.Mbid != Guid.Empty)
                     {
@@ -92,7 +93,7 @@ namespace Where2Play.Pages
                         mbClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
                         mbClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                        var mbUrl = $"https://musicbrainz.org/ws/2/artist/{setlist.Artist.Mbid}?inc=ratings&fmt=json";
+                        var mbUrl = $"https://musicbrainz.org/ws/2/artist/{setlist.Artist.Mbid}?inc=ratings+genres&fmt=json";
                         var mbResponse = await mbClient.GetAsync(mbUrl);
 
                         if (mbResponse.IsSuccessStatusCode)
@@ -105,10 +106,16 @@ namespace Where2Play.Pages
 
                             if (artistDetails?.Rating?.Value != null)
                                 popularity = $"{(artistDetails.Rating.Value / 5.0) * 100:F0}%";
-                        }
 
-                        await Task.Delay(1000);
+                            if (artistDetails?.Genres != null && artistDetails.Genres.Count > 0)
+                            {
+                                var genreNames = artistDetails.Genres.Select(g => g.Name).Take(3);
+                                genre = string.Join(", ", genreNames);
+                            }
+                        }
                     }
+
+                    await Task.Delay(1000);
 
                     DateTime? eventDate = null;
                     if (DateTime.TryParse(setlist.EventDate, out var parsedDate))
@@ -117,7 +124,7 @@ namespace Where2Play.Pages
                     FinalResults.Add(new EventSummary
                     {
                         ArtistName = artistName,
-                        Genre = "N/A",
+                        Genre = genre,
                         Country = country,
                         Venue = setlist.Venue?.Name ?? "Unknown Venue",
                         City = setlist.Venue?.City?.Name ?? normalizedCity,

@@ -6,14 +6,15 @@
 //
 //    var welcome = Welcome.FromJson(jsonString);
 
+using Newtonsoft.Json;
+
 namespace Where2Play.Models
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
 
     public partial class MusicBrainzArtist
     {
@@ -57,13 +58,16 @@ namespace Where2Play.Models
         public Guid Id { get; set; }
 
         [JsonProperty("type-id")]
-        public Guid TypeId { get; set; }
+        public Guid? TypeId { get; set; }
 
         [JsonProperty("disambiguation")]
         public string Disambiguation { get; set; }
 
         [JsonProperty("rating")]
         public Rating Rating { get; set; }
+
+        [JsonProperty("genres")]
+        public List<Genre> Genres { get; set; }
     }
 
     public partial class Area
@@ -72,7 +76,7 @@ namespace Where2Play.Models
         public Guid Id { get; set; }
 
         [JsonProperty("type-id")]
-        public object TypeId { get; set; }
+        public object? TypeId { get; set; }
 
         [JsonProperty("disambiguation")]
         public string Disambiguation { get; set; }
@@ -112,4 +116,19 @@ namespace Where2Play.Models
     {
         public static MusicBrainzArtist FromJson(string json) => JsonConvert.DeserializeObject<MusicBrainzArtist>(json, Where2Play.Models.Converter.Settings);
     }
+}
+
+public partial class Genre
+{
+    [JsonProperty("id")]
+    public Guid Id { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("count")]
+    public long Count { get; set; }
+
+    [JsonProperty("disambiguation")]
+    public string Disambiguation { get; set; }
 }
