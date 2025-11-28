@@ -4,9 +4,8 @@
     ViewData["Title"] = "Home";
 }
 
-## Logo and Header Section ##
 <div class="text-center mt-5">
-    <img src="/images/logo.jpg" alt="Where2Play Logo" style="width:140px; border-radius:12px; margin-bottom:20px;" />
+    <img src="/images/logo.png" alt="A picture of music notes inside a compass" style="width:140px; border-radius:12px; margin-bottom:20px;" />
 
     <h1 class="display-4 fw-bold">Find Your Next Stage</h1>
     <p class="lead mt-3" style="max-width:650px; margin:0 auto;">
@@ -14,7 +13,6 @@
     </p>
 </div>
 
-## Search By City Section ##
 <div class="container mt-5">
     <div class="row text-center">
 
@@ -26,7 +24,6 @@
             </p>
         </div>
 
-        ## Find Similar Artists Section ##
         <div class="col-md-4 mb-4">
             <i class="bi bi-music-note-list" style="font-size: 3rem; color:#1cc88a; margin-bottom:10px;"></i>
             <h4>Find Similar Artists</h4>
@@ -35,7 +32,6 @@
             </p>
         </div>
 
-        ## Recommended Cities Section ##
         <div class="col-md-4 mb-4">
             <i class="bi bi-stars" style="font-size: 3rem; color:#f6c23e; margin-bottom:10px;"></i>
             <h4>Recommended Cities</h4>
@@ -47,19 +43,21 @@
     </div>
 </div>
 
-## Buttons ##
 <div class="text-center mt-5">
     <a class="btn btn-primary btn-lg mx-2" href="/CitySearch">Search Cities</a>
-    <a class="btn btn-outline-secondary btn-lg mx-2" href="/SimilarArtists">Similar Artists</a>
-    <a class="btn btn-outline-secondary btn-lg mx-2" href="/RecommendedCities">Recommended Cities</a>
+    <a id="recommend-btn" class="btn btn-outline-secondary btn-lg mx-2" href="/CityRating">Recommended Cities</a>
 </div>
 
 <style>
-    .display-4 { font-size: 2.8rem; }
-    img { object-fit: cover; }
+    .display-4 {
+        font-size: 2.8rem;
+    }
+
+    img {
+        object-fit: cover;
+    }
 </style>
 
-## Simple Overview Section ##
 <div class="text-center mt-5 mb-5" style="max-width:700px; margin:auto;">
 
     <h4 class="fw-bold mb-4">What Where2Play Helps You Do</h4>
