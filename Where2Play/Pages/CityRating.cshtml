@@ -1,0 +1,109 @@
+﻿@page
+@using Where2Play.Models
+@model Where2Play.Pages.CityRatingModel
+@{
+    ViewData["Title"] = "Tour Planner";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Tour Planner</h1>
+            <p class="lead">Discover the best cities for your next tour based on genre hotspots.</p>
+        </div>
+    </div>
+
+    <!-- The Input Form -->
+    <div class="card p-4 mb-5 shadow-sm">
+        <form method="post">
+            <div class="row g-3">
+                <!-- Genre Input -->
+                <div class="col-md-4">
+                    <label asp-for="BandGenre" class="form-label">Band Genre</label>
+                    <input asp-for="BandGenre" class="form-control" placeholder="e.g. Punk, Jazz, Metal" />
+                    <span asp-validation-for="BandGenre" class="text-danger"></span>
+                </div>
+
+                <!-- Popularity Dropdown (Enum Binding) -->
+                <div class="col-md-4">
+                    <label asp-for="Popularity" class="form-label">Target Venue Size</label>
+                    <select asp-for="Popularity" asp-items="Html.GetEnumSelectList<BandPopularity>()" class="form-select">
+                        <option value="">-- Select Size --</option>
+                    </select>
+                    <span asp-validation-for="Popularity" class="text-danger"></span>
+                </div>
+
+                <!-- Region Dropdown (List Binding) -->
+                <div class="col-md-4">
+                    <label asp-for="TargetRegion" class="form-label">Target Region</label>
+                    <select asp-for="TargetRegion" asp-items="Model.RegionOptions" class="form-select">
+                        <option value="">-- Select Region --</option>
+                    </select>
+                    <span asp-validation-for="TargetRegion" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary w-100">Look Up Cities</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <hr />
+
+    <!-- The Results Table -->
+    @if (Model.Results != null && Model.Results.Any())
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Recommended Cities</h3>
+                <table class="table table-striped table-hover mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Rank</th>
+                            <th scope="col">City</th>
+                            <th scope="col" style="width: 25%;">Fit Score</th>
+                            <th scope="col">History</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rank = 1;
+                        }
+                        @foreach (var city in Model.Results)
+                        {
+                            // Highlight the top results slightly green
+                            string rowClass = city.FitScore > 80 ? "table-success" : "";
+
+                            <tr class="@rowClass">
+                                <td>#@(rank++)</td>
+                                <td class="fw-bold">@city.City</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2">@city.FitScore%</span>
+                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" role="progressbar"
+                                                 style="width: @city.FitScore%;"
+                                                 aria-valuenow="@city.FitScore" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@city.Reason</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else if (HttpMethods.IsPost(Request.Method))
+    {
+        // Only show this message if the user actually clicked submit
+        <div class="alert alert-warning mt-4">
+            No results found. Try a broader genre or a different region.
+        </div>
+    }
+</div>

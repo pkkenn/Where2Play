@@ -43,7 +43,7 @@ else
                 <th>Venue</th>
                 <th>City</th>
                 <th>Date</th>
-                <th>Country</th>
+                <th>Genre</th>
                 <th>Popularity</th>
             </tr>
         </thead>
@@ -55,7 +55,7 @@ else
                     <td>@result.Venue</td>
                     <td>@result.City</td>
                     <td>@(result.Date?.ToString("yyyy-MM-dd") ?? "N/A")</td>
-                    <td>@result.Country</td>
+                    <td>@result.Genre</td>
                     <td>@result.Popularity</td>
                 </tr>
             }
