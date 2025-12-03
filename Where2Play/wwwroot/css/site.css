@@ -1,165 +1,52 @@
+
 html {
-    font-size: 14px;
+    font-size: 16px;
 }
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
 main {
-    margin-top: 80px;
+    margin-top: 140px;
 }
 
 body {
     margin-bottom: 60px;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: ghostwhite;
+    background-image: url('/images/homepage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: white; 
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
     text-align: center;
-}
-
-h4 {
-    text-align: center;
-    color: #26A6A6
-}
-
-ul {
-    text-align: left;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus, .badge:focus, .badge:hover {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #1E2D59;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 60px;
-}
-
-a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
-    color: #26A6A6;
-}
-
-    a.navbar-brand.me-auto:hover, a.nav-link.mx-lg-2:hover {
-        color: #1E2D59;
-    }
-
-
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 500;
-    transition: 0.3s color;
-}
-
-.login-button {
-    background-color: #06A77D;
-    color: #fff;
-    font-size: 14px;
-    padding: 8px 20px;
-    border-radius: 50px;
-    text-decoration: none;
-    transition: 0.3s background-color;
-}
-
-    .login-button:hover {
-        background-color: #26A6A6;
-    }
-
-#account_buttons li {
-    border-left: solid ghostwhite 10px;
-}
-
-#account_buttons li {
-    padding: 2px;
-    position: relative;
     color: white;
 }
 
-.navbar-toggler {
-    border: none;
-    font-size: 1.25rem;
+
+p, li, span, label {
+    color: #e6e6e6;
 }
 
 
-.navbar-right {
-    margin-right: 20px;
-}
-
-.navbar-toggler:focus, .btn-close:focus {
-    box-shadow: none;
-    outline: none;
-}
-
-.nav-item {
-    color: #1E2D59;
-}
-
-#profile.active, #email.active, #change-password.active, #two-factor.active, #personal-data.active {
-    background-color: #26A6A6
-}
-
-
+.navbar-brand,
 .nav-link {
-    color: #1E2D59;
-    font-weight: 500;
-    position: relative;
+    color: white !important;
 }
 
-    .nav-link:hover, .nav-link:active {
-        color: #000;
-    }
-
-
-@media (min-width:991px) {
-    .nav-link:before {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: 0;
-        left: 50%;
-        background-color: #1E2D59;
-        visibility: hidden;
-        transform: translateX(-50%);
-        transition: all 0.3s ease-in-out;
-    }
-
-    .nav-link:hover::before, .nav-link:active::before {
-        width: 100%;
-        color: #06A77D;
-        visibility: visible;
-    }
+.nav-link:hover {
+    color: #26A6A6 !important; 
 }
 
-.btn-info {
-    background-color: #46a7c7;
-    border-color: #46a7c7;
-    color: #fff;
-    transition: background-color 0.3s ease-in-out;
+
+.bi {
+    color: white;
 }
 
-    .btn-info:hover {
-        background-color: #3d8ca7;
-        border-color: #3d8ca7;
-        color: ghostwhite
-    }
 
 .btn-primary {
     background-color: #26A6A6;
     border-color: #26A6A6;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.btn-danger {
-    background-color: #B22222;
+    color: white;
 }
 
 .btn-primary:hover {
@@ -173,25 +60,13 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
     background-color: transparent;
 }
 
-    #recommend-btn:hover {
-        background-color: #D99E32;
-        border-color: #D99E32;
-        color: #ffffff;
-    }
-
-.btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    border-radius: 0.2rem;
-    text-decoration: none;
-}
-
-.form-group {
-    margin-bottom: 1rem;
+#recommend-btn:hover {
+    background-color: #D99E32;
+    color: white;
 }
 
 .img-fluid {
     max-width: 80%;
-    max-height: 500px
+    max-height: 500px;
 }
+
