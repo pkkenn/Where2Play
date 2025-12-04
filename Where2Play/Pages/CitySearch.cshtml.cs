@@ -138,6 +138,7 @@ namespace Where2Play.Pages
                         Url = setlist.Url?.ToString() ?? string.Empty,
                         Popularity = popularity
                     });
+
                     EventRoster.AllEvents = FinalResults;
                 }
             }

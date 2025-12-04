@@ -19,7 +19,7 @@ namespace Where2Play.Controllers
 
         // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public EventSummary sGet(int id)
+        public EventSummary Get(int id)
         {
             return EventRoster.AllEvents.FirstOrDefault(e => e.GetHashCode() == id);
         }
