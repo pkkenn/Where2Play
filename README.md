@@ -13,7 +13,7 @@ By utilizing industry data, you will be able to ensure that you book the best ve
 
 ## Logo
 
-![Logo](https://github.com/pkkenn/Where2Play/blob/master/Where2Play/wwwroot/images/logo.jpg?raw=true)
+![Logo](https://github.com/pkkenn/Where2Play/blob/master/Where2Play/wwwroot/images/logo.png?raw=true)
 
 ## Storyboard
 ### Screen 001 Home Page
