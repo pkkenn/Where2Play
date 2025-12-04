@@ -17,7 +17,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
