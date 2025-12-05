@@ -1,0 +1,100 @@
+{
+  "artists": [
+    {
+      "mbid": "a7f7df4a-77d8-4f12-8acd-5c60c93f4de8",
+      "name": "The Killers",
+      "country": "United States",
+      "genres": ["Rock", "Alternative Rock", "Indie Rock"],
+      "popularity": "92%",
+      "rating": 4.6
+    },
+    {
+      "mbid": "2f61b09e-7fde-4a23-9c98-a8c8c3206e36",
+      "name": "Tyler Childers",
+      "country": "United States",
+      "genres": ["Country", "Folk", "Americana"],
+      "popularity": "85%",
+      "rating": 4.25
+    },
+    {
+      "mbid": "8e48d8d5-8666-4d3d-8e8d-c9f3a3e8e8e8",
+      "name": "Jack Harlow",
+      "country": "United States",
+      "genres": ["Hip Hop", "Rap"],
+      "popularity": "88%",
+      "rating": 4.4
+    },
+    {
+      "mbid": "67f66c07-6e61-4026-ade5-7e782fad3a5d",
+      "name": "Foo Fighters",
+      "country": "United States",
+      "genres": ["Rock", "Alternative Rock", "Grunge"],
+      "popularity": "95%",
+      "rating": 4.75
+    },
+    {
+      "mbid": "e8e8e8e8-4d3d-4d3d-8666-8d5d8e8d8e8d",
+      "name": "Machine Gun Kelly",
+      "country": "United States",
+      "genres": ["Rock", "Pop Punk", "Hip Hop"],
+      "popularity": "82%",
+      "rating": 4.1
+    },
+    {
+      "mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "name": "The Black Keys",
+      "country": "United States",
+      "genres": ["Rock", "Blues Rock", "Garage Rock"],
+      "popularity": "89%",
+      "rating": 4.45
+    },
+    {
+      "mbid": "d89e9b7f-3eef-4fa4-b706-c313c4e0c856",
+      "name": "Twenty One Pilots",
+      "country": "United States",
+      "genres": ["Alternative Rock", "Pop", "Electropop"],
+      "popularity": "93%",
+      "rating": 4.65
+    },
+    {
+      "mbid": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+      "name": "Metallica",
+      "country": "United States",
+      "genres": ["Heavy Metal", "Thrash Metal"],
+      "popularity": "97%",
+      "rating": 4.85
+    },
+    {
+      "mbid": "cc197bad-dc9c-440d-a5b5-d52ba2e14234",
+      "name": "The Weeknd",
+      "country": "Canada",
+      "genres": ["R&B", "Pop", "Electronic"],
+      "popularity": "98%",
+      "rating": 4.9
+    },
+    {
+      "mbid": "b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d",
+      "name": "Taylor Swift",
+      "country": "United States",
+      "genres": ["Pop", "Country", "Folk"],
+      "popularity": "99%",
+      "rating": 4.95
+    },
+    {
+      "mbid": "5441c29d-3602-4898-b1a1-b77fa23b8e50",
+      "name": "David Bowie",
+      "country": "United Kingdom",
+      "genres": ["Rock", "Glam Rock", "Art Rock"],
+      "popularity": "96%",
+      "rating": 4.8
+    },
+    {
+      "mbid": "f37b3f31-b1f8-4b88-8cb5-b34f709b17d7",
+      "name": "Radiohead",
+      "country": "United Kingdom",
+      "genres": ["Alternative Rock", "Art Rock", "Electronic"],
+      "popularity": "94%",
+      "rating": 4.7
+    }
+  ]
+}
