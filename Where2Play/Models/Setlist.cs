@@ -15,7 +15,7 @@ namespace Where2Play.Models
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class Welcome
+    public partial class SetlistFmResponse
     {
         [JsonProperty("type")]
         public string Type { get; set; }
@@ -163,14 +163,14 @@ namespace Where2Play.Models
         public string Name { get; set; }
     }
 
-    public partial class Welcome
+    public partial class SetlistFmResponse
     {
-        public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(json, Where2Play.Models.Converter.Settings);
+        public static SetlistFmResponse FromJson(string json) => JsonConvert.DeserializeObject<SetlistFmResponse>(json, Where2Play.Models.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(self, Where2Play.Models.Converter.Settings);
+        public static string ToJson(this SetlistFmResponse self) => JsonConvert.SerializeObject(self, Where2Play.Models.Converter.Settings);
     }
 
     internal static class Converter
@@ -179,9 +179,11 @@ namespace Where2Play.Models
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
+            NullValueHandling = NullValueHandling.Ignore,
             Converters =
             {
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal },
+                new ParseStringConverter()
             },
         };
     }
@@ -192,7 +194,11 @@ namespace Where2Play.Models
 
     public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            // Return null for nullable types, 0 for non-nullable
+            return t == typeof(long?) ? null : 0L;
+        }
 
         try
         {
@@ -209,11 +215,13 @@ namespace Where2Play.Models
                 return l;
             }
 
-            return null; // fallback if parsing fails
+            // Return default for failed parsing
+            return t == typeof(long?) ? null : 0L;
         }
         catch
         {
-            return null; // fallback for unexpected types
+            // Return default for unexpected types
+            return t == typeof(long?) ? null : 0L;
         }
     }
 

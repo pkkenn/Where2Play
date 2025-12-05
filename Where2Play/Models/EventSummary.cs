@@ -18,7 +18,5 @@ namespace Where2Play.Models
         public string? City { get; set; }
         public DateTime? Date { get; set; }
         public string? Url { get; set; }
-
-       
     }
 }

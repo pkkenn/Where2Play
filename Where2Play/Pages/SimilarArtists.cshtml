@@ -1,0 +1,59 @@
+@page
+@model Where2Play.Pages.SimilarArtistsModel
+@{
+    ViewData["Title"] = "Similar Artists";
+}
+
+<div class="container mt-3">
+    <h2>Find Similar Artists</h2>
+
+    <form method="post" class="mb-3">
+        <div class="input-group">
+            <input asp-for="ArtistName" class="form-control" placeholder="Enter artist name..." />
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
+
+    @if (Model.Genres != null && Model.Genres.Count > 0)
+    {
+        <h5>Top Genres</h5>
+        <div>
+            @foreach (var g in Model.Genres)
+            {
+                <span class="badge bg-secondary me-1">@g</span>
+            }
+        </div>
+    }
+
+    <div class="row mt-3">
+        @if (Model.SimilarArtists != null && Model.SimilarArtists.Count > 0)
+        {
+            foreach (var a in Model.SimilarArtists)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark text-light h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@a.Name</h5>
+                            <p class="card-text">Country: @a.Country</p>
+                            <p class="card-text">Genres: @(a.Genres != null ? string.Join(", ", a.Genres) : "-")</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a class="btn btn-sm btn-outline-light" asp-page="/CitySearch" asp-route-q="@a.Name">See Where They Play</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p>No similar artists found. Try another artist.</p>
+            </div>
+        }
+    </div>
+</div>

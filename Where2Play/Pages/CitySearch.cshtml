@@ -5,19 +5,11 @@
 }
 
 <h1>Smart Concert Booker</h1>
-<p>Find concerts by city or artist!</p>
 
 <form method="post" class="mb-3">
     <div class="row g-2 align-items-end">
-        <div class="col-auto">
-            <label asp-for="SearchType" class="form-label">Search Type</label>
-            <select asp-for="SearchType" class="form-select">
-                <option value="City">City</option>
-                <option value="Artist">Artist</option>
-            </select>
-        </div>
         <div class="col">
-            <label asp-for="SearchText" class="form-label">Enter Name</label>
+            <label asp-for="SearchText" class="form-label">Search (City or Artist)</label>
             <input asp-for="SearchText" class="form-control" placeholder="City or Artist" />
         </div>
         <div class="col-auto">
@@ -30,7 +22,7 @@
 
 <h3>Results</h3>
 
-@if (Model.FinalResults == null || !Model.FinalResults.Any())
+@if (Model.PagedResults == null || !Model.PagedResults.Any())
 {
     <p>No results found.</p>
 }
@@ -48,7 +40,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var result in Model.FinalResults)
+            @foreach (var result in Model.PagedResults)
             {
                 <tr>
                     <td>@result.ArtistName</td>
@@ -61,4 +53,13 @@ else
             }
         </tbody>
     </table>
+
+    @if (Model.HasMore)
+    {
+        <form method="get">
+            <input type="hidden" name="q" value="@Model.SearchText" />
+            <input type="hidden" name="page" value="@(Model.Page + 1)" />
+            <button type="submit" class="btn btn-outline-secondary">Load more</button>
+        </form>
+    }
 }

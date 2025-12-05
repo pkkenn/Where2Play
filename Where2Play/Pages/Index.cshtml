@@ -4,67 +4,63 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center mt-5">
-    <img src="/images/logo.png" alt="A picture of music notes inside a compass" style="width:140px; border-radius:12px; margin-bottom:20px;" />
+<div class="hero-section">
+    <h1 class="hero-title">Find Your Next Stage</h1>
+    <p class="lead mb-4">Discover the best cities, venues, and audiences using real performance data.</p>
+    
+    <form action="/CitySearch" method="get" class="hero-search">
+        <input type="text" name="query" placeholder="Enter an Artist or City name..." required>
+        <button type="submit">Search</button>
+    </form>
 
-    <h1 class="display-4 fw-bold">Find Your Next Stage</h1>
-    <p class="lead mt-3" style="max-width:650px; margin:0 auto;">
-        Where2Play helps artists and tour managers discover the best cities, venues, and audiences using real performance and listener data.
-    </p>
-</div>
-
-<div class="container mt-5">
-    <div class="row text-center">
-
-        <div class="col-md-4 mb-4">
-            <i class="bi bi-geo-alt-fill" style="font-size: 3rem; color:#4e73df; margin-bottom:10px;"></i>
-            <h4>Search by City</h4>
-            <p style="font-size:0.95rem;">
-                Instantly explore historical concert activity and music fans in any city.
-            </p>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <i class="bi bi-music-note-list" style="font-size: 3rem; color:#1cc88a; margin-bottom:10px;"></i>
-            <h4>Find Similar Artists</h4>
-            <p style="font-size:0.95rem;">
-                Discover artists with matching genres and popularity levels to help plan better shows.
-            </p>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <i class="bi bi-stars" style="font-size: 3rem; color:#f6c23e; margin-bottom:10px;"></i>
-            <h4>Recommended Cities</h4>
-            <p style="font-size:0.95rem;">
-                See which cities give you the strongest potential audience based on real data.
-            </p>
-        </div>
-
+    <div class="mt-3">
+        <a href="/swagger" class="btn btn-secondary">Open API Docs (Swagger)</a>
     </div>
 </div>
 
-<div class="text-center mt-5">
-    <a class="btn btn-primary btn-lg mx-2" href="/CitySearch">Search Cities</a>
-    <a id="recommend-btn" class="btn btn-outline-secondary btn-lg mx-2" href="/CityRating">Recommended Cities</a>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-city"></i></div>
+                <h3>Search by City</h3>
+                <p>Explore historical concert activity and find where fans are actually showing up.</p>
+                <a href="/CitySearch" class="btn btn-outline-primary">Search Cities</a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h3>Similar Artists</h3>
+                <p>Discover artists with matching genres to see where they are touring successfully.</p>
+                <a href="/SimilarArtists" class="btn btn-outline-primary">Compare Artists</a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>City Ratings</h3>
+                <p>Get data-backed suggestions for which cities will give you the highest ROI.</p>
+                <a href="/CityRating" class="btn btn-outline-primary">View Ratings</a>
+            </div>
+        </div>
+    </div>
 </div>
 
-<style>
-    .display-4 {
-        font-size: 2.8rem;
-    }
+<div class="container text-center mt-5 mb-5 opacity-75 powered-by">
+    <p class="small text-uppercase fw-bold">Powered by Real-Time Data From</p>
+    <div class="d-flex justify-content-center gap-5 fs-4">
+        
+        <span title="Setlist.fm API">
+            <i class="fas fa-list-ul"></i> <i class="fas fa-guitar"></i> Setlist.fm
+        </span>
 
-    img {
-        object-fit: cover;
-    }
-</style>
+        <span title="MusicBrainz API">
+            <i class="fas fa-music"></i> <i class="fas fa-brain"></i> MusicBrainz
+        </span>
 
-<div class="text-center mt-5 mb-5" style="max-width:700px; margin:auto;">
-
-    <h4 class="fw-bold mb-4">What Where2Play Helps You Do</h4>
-
-    <p class="mb-3"><strong>1.</strong> Explore which cities have strong music engagement and real audience interest.</p>
-    <p class="mb-3"><strong>2.</strong> Understand how artists relate in genre and popularity to guide better decisions.</p>
-    <p class="mb-3"><strong>3.</strong> Get suggestions for cities that are most likely to support your next live show.</p>
-
+    </div>
 </div>
 

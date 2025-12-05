@@ -1,151 +1,111 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Net.Http.Headers;
 using Where2Play.Models;
+using Where2Play.Services;
+using System.Globalization;
 
-namespace Where2Play.Pages
+namespace Where2Play.Pages;
+
+public class SearchModel(IMusicService musicService, ILogger<SearchModel> logger) : PageModel
 {
-    public class SearchModel : PageModel
+    private const int DefaultPageSize = 5;
+
+    [BindProperty]
+    public string SearchText { get; set; } = string.Empty;
+
+    public List<EventSummary> FinalResults { get; private set; } = [];
+    public List<EventSummary> PagedResults { get; private set; } = [];
+    public new int Page { get; private set; } = 1;
+    public int PageSize { get; private set; } = DefaultPageSize;
+    public bool HasMore { get; private set; }
+
+    public async Task OnGetAsync(string? q, string? query, int page = 1, CancellationToken cancellationToken = default)
     {
-        [BindProperty]
-        public string SearchText { get; set; }
+        FinalResults = [];
+        PagedResults = [];
 
-        [BindProperty]
-        public string SearchType { get; set; } = "City"; // default
+        var searchInput = !string.IsNullOrWhiteSpace(q) ? q : query;
 
-        public List<EventSummary> FinalResults { get; set; } = new List<EventSummary>();
-
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<SearchModel> _logger;
-
-        public SearchModel(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<SearchModel> logger)
+        if (string.IsNullOrWhiteSpace(searchInput))
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-            _logger = logger;
+            return;
         }
 
-        public void OnGet() { }
+        SearchText = searchInput;
+        Page = Math.Max(1, page);
 
-        public async Task OnPostAsync()
+        await PerformSearchAsync(SearchText, cancellationToken);
+    }
+
+    public async Task OnPostAsync(CancellationToken cancellationToken)
+    {
+        FinalResults = [];
+        PagedResults = [];
+        Page = 1;
+
+        if (string.IsNullOrWhiteSpace(SearchText))
         {
-            FinalResults.Clear();
+            logger.LogWarning("Search attempted with empty search text.");
+            return;
+        }
 
-            if (string.IsNullOrWhiteSpace(SearchText))
+        await PerformSearchAsync(SearchText, cancellationToken);
+    }
+
+    private async Task PerformSearchAsync(string input, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Normalize input for city queries (title case)
+            var normalized = CultureInfo.CurrentCulture.TextInfo
+                .ToTitleCase(input.Trim().ToLower());
+
+            // Try city search first
+            var (cityResults, cityError) = await musicService.SearchCityAsync(normalized, cancellationToken);
+
+            if (!string.IsNullOrEmpty(cityError))
             {
-                _logger.LogWarning("Search attempted with empty search text.");
+                logger.LogError("SearchCityAsync returned error: {Error}", cityError);
+            }
+
+            if (cityResults is { Count: > 0 })
+            {
+                FinalResults = cityResults;
+                ApplyPaging();
                 return;
             }
 
-            if (SearchType != "City")
+            // Fallback: treat input as an artist name
+            var (artistResults, artistError) = await musicService.SearchArtistAsync(input, 5, cancellationToken);
+
+            if (!string.IsNullOrEmpty(artistError))
             {
-                _logger.LogInformation("Artist search not implemented yet.");
+                logger.LogError("SearchArtistAsync returned error: {Error}", artistError);
+            }
+
+            if (artistResults is { Count: > 0 })
+            {
+                FinalResults = artistResults;
+                ApplyPaging();
                 return;
             }
 
-            string normalizedCity = System.Globalization.CultureInfo.CurrentCulture.TextInfo
-                                    .ToTitleCase(SearchText.Trim().ToLower());
-
-            try
-            {
-                var apiKey = _configuration["ApiKeys:SetlistFm"];
-                if (string.IsNullOrEmpty(apiKey))
-                {
-                    _logger.LogError("Setlist.fm API key not configured.");
-                    return;
-                }
-
-                var httpClient = _httpClientFactory.CreateClient();
-                httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
-                httpClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var setlistUrl = $"https://api.setlist.fm/rest/1.0/search/setlists?cityName={normalizedCity}";
-                var response = await httpClient.GetAsync(setlistUrl);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    string errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogError("Setlist.fm API failed with status {StatusCode}: {ErrorContent}", response.StatusCode, errorContent);
-                    return;
-                }
-
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                var searchResult = Welcome.FromJson(jsonResponse);
-
-                if (searchResult?.Setlist == null || searchResult.Setlist.Length == 0)
-                {
-                    _logger.LogInformation("No setlists found for city: {City}", normalizedCity);
-                    return;
-                }
-
-                foreach (var setlist in searchResult.Setlist)
-                {
-                    string artistName = setlist.Artist?.Name ?? "Unknown Artist";
-                    string country = "N/A";
-                    string popularity = "N/A";
-                    string genre = "N/A";
-
-                    if (setlist.Artist?.Mbid != Guid.Empty)
-                    {
-                        var mbClient = _httpClientFactory.CreateClient();
-                        mbClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
-                        mbClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                        var mbUrl = $"https://musicbrainz.org/ws/2/artist/{setlist.Artist.Mbid}?inc=ratings+genres&fmt=json";
-                        var mbResponse = await mbClient.GetAsync(mbUrl);
-
-                        if (mbResponse.IsSuccessStatusCode)
-                        {
-                            var mbJson = await mbResponse.Content.ReadAsStringAsync();
-                            var artistDetails = MusicBrainzArtist.FromJson(mbJson);
-
-                            if (!string.IsNullOrWhiteSpace(artistDetails?.Country))
-                                country = artistDetails.Country;
-
-                            if (artistDetails?.Rating?.Value != null)
-                                popularity = $"{(artistDetails.Rating.Value / 5.0) * 100:F0}%";
-
-                            if (artistDetails?.Genres != null && artistDetails.Genres.Count > 0)
-                            {
-                                var genreNames = artistDetails.Genres.Select(g => g.Name).Take(3);
-                                genre = string.Join(", ", genreNames);
-                            }
-                        }
-                    }
-
-                    await Task.Delay(1000);
-
-                    DateTime? eventDate = null;
-                    if (DateTime.TryParseExact(setlist.EventDate,
-                           "dd-MM-yyyy",
-                           System.Globalization.CultureInfo.InvariantCulture,
-                           System.Globalization.DateTimeStyles.None,
-                           out var parsedDate))
-                    {
-                        eventDate = parsedDate;
-                    }
-
-                    FinalResults.Add(new EventSummary
-                    {
-                        ArtistName = artistName,
-                        Genre = genre,
-                        Country = country,
-                        Venue = setlist.Venue?.Name ?? "Unknown Venue",
-                        City = setlist.Venue?.City?.Name ?? normalizedCity,
-                        Date = eventDate,
-                        Url = setlist.Url?.ToString() ?? string.Empty,
-                        Popularity = popularity
-                    });
-
-                    EventRoster.AllEvents = FinalResults;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred during API calls for city: {City}", SearchText);
-            }
+            logger.LogInformation("No setlists found for query: {Query}", input);
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error occurred during search for: {Query}", input);
+        }
+    }
+
+    private void ApplyPaging()
+    {
+        var take = Math.Max(PageSize * Page, PageSize);
+        PagedResults = FinalResults.Take(take).ToList();
+        HasMore = FinalResults.Count > take;
     }
 }
