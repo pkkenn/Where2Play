@@ -25,6 +25,7 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddScoped<Where2Play.Services.CitySearchService>();
+builder.Services.AddScoped<Where2Play.Services.EventParkingService>();
 
 var app = builder.Build();
 

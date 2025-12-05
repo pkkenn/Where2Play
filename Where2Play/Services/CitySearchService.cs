@@ -370,16 +370,25 @@ namespace Where2Play.Services
                     else
                     {
                         _logger.LogInformation("No setlists found for artist: {Artist}", normalizedArtist);
+                        // Return demo events from matching artist
+                        results.AddRange(_demoEvents.Where(e =>
+                            e.ArtistName?.Equals(normalizedArtist, StringComparison.OrdinalIgnoreCase) == true));
                     }
                 }
                 else
                 {
                     _logger.LogError("Setlist.fm API failed with status {StatusCode}", response.StatusCode);
+                    // Return demo events when API fails or is rate limited
+                    results.AddRange(_demoEvents.Where(e =>
+                        e.ArtistName?.Equals(normalizedArtist, StringComparison.OrdinalIgnoreCase) == true));
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred during artist search: {Artist}", artistName);
+                // Return demo events on error
+                results.AddRange(_demoEvents.Where(e =>
+                    e.ArtistName?.Equals(normalizedArtist, StringComparison.OrdinalIgnoreCase) == true));
             }
 
             return results;

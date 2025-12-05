@@ -11,10 +11,12 @@ namespace Where2Play.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly CitySearchService _searchService;
+        private readonly EventParkingService _parkingService;
 
-        public ValuesController(CitySearchService searchService)
+        public ValuesController(CitySearchService searchService, EventParkingService parkingService)
         {
             _searchService = searchService;
+            _parkingService = parkingService;
         }
 
         /// <summary>
@@ -103,6 +105,66 @@ namespace Where2Play.Controllers
 
             var results = await _searchService.SearchArtistEventsAsync(artist);
             return Ok(results);
+        }
+
+        /// <summary>
+        /// Get parking information for a specific event
+        /// </summary>
+        /// <param name="eventId">The event ID</param>
+        /// <returns>Parking information from EventParking API</returns>
+        /// <response code="200">Returns parking information if available</response>
+        /// <response code="404">If parking information cannot be found</response>
+        [HttpGet("parking/event/{eventId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetParkingForEvent(string eventId)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return BadRequest("Event ID is required");
+            }
+
+            var parkingData = await _parkingService.GetParkingForEventAsync(eventId);
+            if (parkingData == null)
+            {
+                return NotFound($"No parking information found for event {eventId}");
+            }
+
+            return Ok(parkingData);
+        }
+
+        /// <summary>
+        /// Get parking options near a specific location
+        /// </summary>
+        /// <param name="latitude">Venue latitude</param>
+        /// <param name="longitude">Venue longitude</param>
+        /// <param name="radius">Search radius in miles (default: 1.0)</param>
+        /// <returns>List of nearby parking options</returns>
+        /// <response code="200">Returns nearby parking options</response>
+        [HttpGet("parking/nearby")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetNearbyParking([FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radius = 1.0)
+        {
+            if (latitude == 0 || longitude == 0)
+            {
+                return BadRequest("Latitude and longitude are required");
+            }
+
+            var parkingData = await _parkingService.GetParkingByLocationAsync(latitude, longitude, radius);
+            return Ok(parkingData ?? new { message = "No parking information available for this location" });
+        }
+
+        /// <summary>
+        /// Get all available parking options
+        /// </summary>
+        /// <returns>List of all parking options</returns>
+        /// <response code="200">Returns all parking options</response>
+        [HttpGet("parking")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllParking()
+        {
+            var parkingData = await _parkingService.GetAllParkingAsync();
+            return Ok(parkingData ?? new { message = "No parking information available" });
         }
     }
 }
