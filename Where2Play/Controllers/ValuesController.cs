@@ -75,5 +75,34 @@ namespace Where2Play.Controllers
             var results = await _searchService.SearchCityEventsAsync(city);
             return Ok(results);
         }
+
+        /// <summary>
+        /// Search for concert events by artist name from MusicBrainz
+        /// </summary>
+        /// <param name="artist">The name of the artist or band to search for (e.g., Metallica, Taylor Swift, The Killers)</param>
+        /// <returns>A list of concert events for the specified artist from Setlist.fm, enriched with MusicBrainz data</returns>
+        /// <remarks>
+        /// This endpoint searches MusicBrainz for the artist and then finds all concert setlists for that artist on Setlist.fm.
+        /// Results include venue, city, date, and artist details (genres, popularity, country).
+        /// 
+        /// Sample request:
+        /// 
+        ///     GET /api/Values/artist?artist=Metallica
+        /// </remarks>
+        /// <response code="200">Returns the list of events found for the artist</response>
+        /// <response code="400">If the artist parameter is missing or empty</response>
+        [HttpGet("artist")]
+        [ProducesResponseType(typeof(List<EventSummary>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<EventSummary>>> SearchByArtist([FromQuery] string artist)
+        {
+            if (string.IsNullOrWhiteSpace(artist))
+            {
+                return BadRequest("Artist parameter is required");
+            }
+
+            var results = await _searchService.SearchArtistEventsAsync(artist);
+            return Ok(results);
+        }
     }
 }

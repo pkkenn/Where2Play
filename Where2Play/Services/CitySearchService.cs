@@ -255,5 +255,134 @@ namespace Where2Play.Services
 
             return results;
         }
+
+        public async Task<List<EventSummary>> SearchArtistEventsAsync(string artistName)
+        {
+            var results = new List<EventSummary>();
+            string normalizedArtist = artistName?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(normalizedArtist))
+            {
+                return results;
+            }
+
+            try
+            {
+                var apiKey = _configuration["ApiKeys:SetlistFm"];
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    _logger.LogError("Setlist.fm API key not configured.");
+                    return results;
+                }
+
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Search for artist on Setlist.fm
+                var setlistUrl = $"https://api.setlist.fm/rest/1.0/search/setlists?artistName={System.Web.HttpUtility.UrlEncode(normalizedArtist)}";
+                var response = await httpClient.GetAsync(setlistUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    var searchResult = Welcome.FromJson(jsonResponse);
+
+                    if (searchResult?.Setlist != null && searchResult.Setlist.Length > 0)
+                    {
+                        foreach (var setlist in searchResult.Setlist)
+                        {
+                            string artistNameResult = setlist.Artist?.Name ?? "Unknown Artist";
+                            string country = "N/A";
+                            string popularity = "N/A";
+                            string genre = "N/A";
+
+                            // Try to get data from cache
+                            if (setlist.Artist?.Mbid != null && setlist.Artist.Mbid != Guid.Empty)
+                            {
+                                var cachedArtist = _artistCache?.Artists.FirstOrDefault(a => 
+                                    a.Mbid.Equals(setlist.Artist.Mbid.ToString(), StringComparison.OrdinalIgnoreCase));
+
+                                if (cachedArtist != null)
+                                {
+                                    country = cachedArtist.Country;
+                                    popularity = cachedArtist.Popularity;
+                                    genre = string.Join(", ", cachedArtist.Genres);
+                                }
+                                else
+                                {
+                                    // Fall back to live API call
+                                    var mbClient = _httpClientFactory.CreateClient();
+                                    mbClient.DefaultRequestHeaders.Add("User-Agent", "Where2Play/1.0 (dickendd@mail.uc.edu)");
+                                    mbClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                                    var mbUrl = $"https://musicbrainz.org/ws/2/artist/{setlist.Artist.Mbid}?inc=ratings+genres&fmt=json";
+                                    var mbResponse = await mbClient.GetAsync(mbUrl);
+
+                                    if (mbResponse.IsSuccessStatusCode)
+                                    {
+                                        var mbJson = await mbResponse.Content.ReadAsStringAsync();
+                                        var artistDetails = MusicBrainzArtist.FromJson(mbJson);
+
+                                        if (!string.IsNullOrWhiteSpace(artistDetails?.Country))
+                                            country = artistDetails.Country;
+
+                                        if (artistDetails?.Rating?.Value != null)
+                                            popularity = $"{(artistDetails.Rating.Value / 5.0) * 100:F0}%";
+
+                                        if (artistDetails?.Genres != null && artistDetails.Genres.Count > 0)
+                                        {
+                                            var genreNames = artistDetails.Genres.Select(g => g.Name).Take(3);
+                                            genre = string.Join(", ", genreNames);
+                                        }
+                                    }
+
+                                    await Task.Delay(1000);
+                                }
+                            }
+
+                            DateTime? eventDate = null;
+                            if (DateTime.TryParseExact(setlist.EventDate,
+                                   "dd-MM-yyyy",
+                                   System.Globalization.CultureInfo.InvariantCulture,
+                                   System.Globalization.DateTimeStyles.None,
+                                   out var parsedDate))
+                            {
+                                eventDate = parsedDate;
+                            }
+
+                            results.Add(new EventSummary
+                            {
+                                ArtistName = artistNameResult,
+                                Genre = genre,
+                                Country = country,
+                                Venue = setlist.Venue?.Name ?? "Unknown Venue",
+                                City = setlist.Venue?.City?.Name ?? "Unknown City",
+                                Date = eventDate,
+                                Url = setlist.Url?.ToString() ?? string.Empty,
+                                Popularity = popularity
+                            });
+                        }
+
+                        _logger.LogInformation("Found {Count} events for artist: {Artist}", results.Count, normalizedArtist);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("No setlists found for artist: {Artist}", normalizedArtist);
+                    }
+                }
+                else
+                {
+                    _logger.LogError("Setlist.fm API failed with status {StatusCode}", response.StatusCode);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during artist search: {Artist}", artistName);
+            }
+
+            return results;
+        }
     }
 }
