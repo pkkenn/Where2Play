@@ -1,12 +1,9 @@
-﻿namespace Where2Play.Models
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json; //
+
+namespace Where2Play.Models
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-
     public partial class Parking
     {
         [JsonProperty("id")]
@@ -22,10 +19,10 @@
         public DateTimeOffset DatetimeUtc { get; set; }
 
         [JsonProperty("enddatetime_utc")]
-        public DateTimeOffset EnddatetimeUtc { get; set; }
+        public DateTimeOffset? EnddatetimeUtc { get; set; }
 
         [JsonProperty("venue")]
-        public Venue Venue { get; set; }
+        public ParkingVenue Venue { get; set; }
 
         [JsonProperty("performers")]
         public Performer[] Performers { get; set; }
@@ -43,22 +40,22 @@
         public Uri DisplayImageUrl { get; set; }
     }
 
-    public partial class Venue
+    public partial class ParkingVenue
     {
         [JsonProperty("id")]
-        public long ParkingVenueId { get; set; }
+        public long Id { get; set; }
 
-        [JsonProperty("name_v2")]
-        public string NameV2 { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         [JsonProperty("display_location")]
         public string DisplayLocation { get; set; }
 
         [JsonProperty("location")]
-        public Location Location { get; set; }
+        public ParkingLocation Location { get; set; }
     }
 
-    public partial class Location
+    public partial class ParkingLocation
     {
         [JsonProperty("lat")]
         public double Lat { get; set; }

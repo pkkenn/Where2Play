@@ -1,0 +1,70 @@
+﻿@page
+@model Where2Play.Pages.ParkingSearchModel
+@{
+    ViewData["Title"] = "Parking Search";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12 text-center">
+            <h1 class="display-5">Available Parking</h1>
+            <p class="lead text-muted">Find all events in your city - powered by <a href="https://eventparking-g2h3grd0e4cdgvag.eastus2-01.azurewebsites.net/">Event Parking</a>  API</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <form method="get">
+                <div class="input-group input-group-lg shadow-sm">
+                    <input type="text" 
+                           class="form-control" 
+                           name="SearchCity" 
+                           placeholder="Enter a city (e.g. Cincinnati, Cleveland)..." 
+                           value="@Model.SearchCity" 
+                           aria-label="City Search">
+                    <button class="btn btn-primary px-4" type="submit">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.ParkingList != null && Model.ParkingList.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var parking in Model.ParkingList)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header text-white d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="bi bi-calendar-event me-2"></i>
+                                @parking.DatetimeLocal.ToString("MMM dd, yyyy")
+                            </span>
+                            <small>@parking.DatetimeLocal.ToString("h:mm tt")</small>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">@parking.Title</h5>
+                            @if (parking.Venue != null)
+                            {
+                                <h6 class="card-subtitle mb-3 text-muted">@parking.Venue.Name</h6>
+                                <p class="card-text small">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                    @parking.Venue.DisplayLocation
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-light text-center mt-4 border" role="alert">
+            <h4 class="alert-heading text-muted">No results found</h4>
+            <p class="mb-0">Try searching for a different city like "Cincinnati" or "Columbus".</p>
+        </div>
+    }
+</div>
