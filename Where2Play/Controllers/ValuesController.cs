@@ -164,7 +164,16 @@ namespace Where2Play.Controllers
         public async Task<IActionResult> GetAllParking()
         {
             var parkingData = await _parkingService.GetAllParkingAsync();
-            return Ok(parkingData ?? new { message = "No parking information available" });
+
+            // Check if the list is null or empty
+            if (parkingData == null || !parkingData.Any())
+            {
+                // Return the message object if no data found
+                return Ok(new { message = "No parking information available" });
+            }
+
+            // Otherwise, return the list of parking
+            return Ok(parkingData);
         }
     }
 }

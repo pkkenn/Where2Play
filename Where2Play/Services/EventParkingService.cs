@@ -1,6 +1,7 @@
-using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using Where2Play.Models;
 
 namespace Where2Play.Services
 {
@@ -86,34 +87,69 @@ namespace Where2Play.Services
             }
         }
 
-        /// <summary>
-        /// Get all available parking options
-        /// </summary>
-        /// <returns>List of all parking options</returns>
-        public async Task<dynamic?> GetAllParkingAsync()
+
+        public async Task<List<Parking>> SearchEventsAsync(string query)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient();
+
+                // Use the user's provided URL structure: /api/geteventsearch?q=TERM
+                // We use Uri.EscapeDataString to handle spaces or special characters safely
+                string safeQuery = Uri.EscapeDataString(query);
+                var response = await client.GetAsync($"{_eventParkingApiUrl}/geteventsearch?q={safeQuery}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var parkingData = JsonConvert.DeserializeObject<List<Parking>>(content);
+
+                    // Return the list or an empty list if null
+                    return parkingData ?? new List<Parking>();
+                }
+                else
+                {
+                    _logger.LogWarning($"Search failed for '{query}'. Status: {response.StatusCode}");
+                    return new List<Parking>();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error searching for '{query}'.");
+                return new List<Parking>();
+            }
+        }
+
+        /// <summary>
+        /// Get all available parking options
+        /// </summary>
+        /// <returns>List of all parking options</returns>
+        public async Task<List<Parking>> GetAllParkingAsync()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                //
                 var response = await client.GetAsync($"{_eventParkingApiUrl}/parking");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var parkingData = JsonConvert.DeserializeObject<dynamic>(content);
+                    // Deserialize into your new List<Parking> model instead of dynamic
+                    var parkingData = JsonConvert.DeserializeObject<List<Parking>>(content);
                     _logger.LogInformation("Retrieved all parking options");
-                    return parkingData;
+                    return parkingData ?? new List<Parking>();
                 }
                 else
                 {
                     _logger.LogWarning($"Failed to retrieve all parking options: {response.StatusCode}");
-                    return null;
+                    return new List<Parking>();
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error retrieving all parking options: {ex.Message}");
-                return null;
+                return new List<Parking>();
             }
         }
     }
