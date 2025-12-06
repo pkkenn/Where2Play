@@ -24,7 +24,7 @@ h1 {
 
 h4 {
     text-align: center;
-    color: #26A6A6
+    color: #1F7F7F
 }
 
 ul {
@@ -45,7 +45,7 @@ body {
 }
 
 a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
-    color: #26A6A6;
+    color: #1F7F7F;
 }
 
     a.navbar-brand.me-auto:hover, a.nav-link.mx-lg-2:hover {
@@ -60,7 +60,7 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
 .login-button {
-    background-color: #06A77D;
+    background-color: #05735a;
     color: #fff;
     font-size: 14px;
     padding: 8px 20px;
@@ -70,7 +70,7 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
     .login-button:hover {
-        background-color: #26A6A6;
+        background-color: #1F7F7F;
     }
 
 #account_buttons li {
@@ -103,7 +103,7 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
 #profile.active, #email.active, #change-password.active, #two-factor.active, #personal-data.active {
-    background-color: #26A6A6
+    background-color: #1F7F7F
 }
 
 
@@ -134,14 +134,14 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 
     .nav-link:hover::before, .nav-link:active::before {
         width: 100%;
-        color: #06A77D;
+        color: #05735a;
         visibility: visible;
     }
 }
 
 .btn-info {
-    background-color: #46a7c7;
-    border-color: #46a7c7;
+    background-color: #2F7E9A;
+    border-color: #2F7E9A;
     color: #fff;
     transition: background-color 0.3s ease-in-out;
 }
@@ -153,8 +153,8 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
     }
 
 .btn-primary {
-    background-color: #26A6A6;
-    border-color: #26A6A6;
+    background-color: #1F7F7F;
+    border-color: #1F7F7F;
     transition: background-color 0.3s ease-in-out;
 }
 
@@ -168,14 +168,14 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
 #recommend-btn {
-    color: #D99E32;
-    border-color: #D99E32;
+    color: #9C6A00;
+    border-color: #9C6A00;
     background-color: transparent;
 }
 
     #recommend-btn:hover {
-        background-color: #D99E32;
-        border-color: #D99E32;
+        background-color: #9C6A00;
+        border-color: #9C6A00;
         color: #ffffff;
     }
 
@@ -242,8 +242,8 @@ a.navbar-brand.me-auto, a.nav-link.mx-lg-2, h1, h2 {
 }
 
 .input-group .btn-primary {
-    background-color: #26A6A6;
-    border-color: #26A6A6;
+    background-color: #1F7F7F;
+    border-color: #1F7F7F;
 }
 
     .input-group .btn-primary:hover {
